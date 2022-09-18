@@ -1,0 +1,103 @@
+<div class="content">
+  <img src="../assets/logo.jpg" class="imageFix" alt="Entities Comparison">
+  <div class="wrap">
+    <textarea [(ngModel)]=data class="form-control z-depth-1" id="exampleFormControlTextarea6" cols=20 rows=10
+      placeholder="Enter a JSON format..."></textarea>
+    <div *ngIf="appearError" id="errorMessage">
+      <p>! {{message}}</p>
+    </div>
+    <button type="button" class="btn btn-primary select" (click)="beautify()">Beautify</button>
+    |
+    <button type="button" class="btn btn-primary select" (click)="change()">Change</button>
+  </div>
+
+  <div *ngIf=!loading>
+    <select class="form-select" aria-label="Default select example">
+      <option selected>Tables</option>
+      <option value="1">Images</option>
+      <option value="2">Wikipedia</option>
+    </select>
+
+    <div class="name">Aristotle & Socrates</div>
+    <div class="name">Aristotle & Socrates</div>
+    <div id="table-container">
+
+      <div class="column2 right-border">
+        <table class="mtable">
+          <thead>
+            <tr>
+              <th>Predicate</th>
+              <th>Object</th>
+            </tr>
+          </thead>
+          <tbody class="table-body">
+            <tr *ngFor="let user of oneJSON[0]">
+              <td class="table-cell">{{ user.predicate }}</td>
+              <td class="table-cell"><a href="">{{ user.object }}</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- <div class="name">Socrates</div> -->
+      <div class="column2 left-border">
+        <table class="mtable">
+          <thead>
+            <tr>
+              <th>Predicate</th>
+              <th>Object</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of otherJSON[0]">
+              <td class="table-cell">{{ user.predicate }}</td>
+              <td class="table-cell">{{ user.object }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- <app-entities-other></app-entities-other> -->
+
+    </div>
+
+
+    <!-- <div class="row1">
+    <div class="column2">
+      <code [innerHTML]="text"></code>
+    </div>
+    <div class="column2">
+      <code [innerHTML]="text"></code>
+    </div>
+  </div> -->
+
+    <!-- <div style="position:absolute; left:100px; right:100px;">
+    <div style="position:relative;">
+      <img src="../assets/logo.jpg" style="position:absolute;">
+      <div style="position: absolute; left:210px; right:0px; top:0px;">
+        <textarea class="form-control z-depth-1" id="exampleFormControlTextarea6" style="width:100%; height:100px; display:block;
+            padding:0;"> </textarea>
+      </div>
+    </div>
+  </div> -->
+  </div>
+</div>
+
+<div id="load">
+  <div *ngIf="loading">
+
+    <div class="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+</div>
+
+<footer class="text-center text">
+  <hr />
+  Copyright © 2022 Entities Comparison Inc.
+  <br />
+  All trademarks or registered trademarks are property of their respective
+  owners.
+</footer>

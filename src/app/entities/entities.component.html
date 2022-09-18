@@ -1,0 +1,31 @@
+<div class="text-center">
+  <div class="polaroid">
+    <img src="../assets/logo.jpg" class="rounded" alt="Entities Comparison">
+  </div>
+</div>
+<div class="page-hero d-flex align-items-center justify-content-center">
+  <div class="form-group shadow-textarea">
+    <!-- <label for="exampleFormControlTextarea6">Shadow and placeholder</label> -->
+
+    <div id="textJson">
+      <textarea [(ngModel)]=data class="form-control z-depth-1" id="exampleFormControlTextarea6" cols=50 rows=10
+        placeholder="Enter a JSON format..."></textarea>
+      <div *ngIf="appearError" id="errorMessage">
+        <p>! {{message}}</p>
+      </div>
+    </div>
+    <br>
+    <button type="button" class="btn btn-primary beautify" (click)="beautify()">Beautify</button>
+    |
+    <button type="button" class="btn btn-primary select" (click)="select()">Select</button>
+  </div>
+</div>
+
+
+<footer class="text-center text">
+  <hr />
+  Copyright © 2022 Entities Comparison Inc.
+  <br />
+  All trademarks or registered trademarks are property of their respective
+  owners.
+</footer>

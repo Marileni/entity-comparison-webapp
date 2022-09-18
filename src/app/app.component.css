@@ -1,0 +1,100 @@
+.shadow-textarea textarea.form-control::placeholder {
+  font-weight: 300;
+}
+
+.shadow-textarea textarea.form-control {
+  padding-left: 0.8rem;
+}
+
+img, svg {
+  vertical-align: middle;
+  padding-bottom: 30px;
+}
+
+.form-control {
+  background-color: #ede7e7;
+}
+
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #ee4646;
+  --bs-btn-border-color: #ee4646;
+}
+
+.beautify {
+  margin-left: 300px;
+}
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 400px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+
+  .sidenav a {
+    font-size: 18px;
+  }
+}
+
+#main {
+  position: sticky;
+  top: 0px;
+  transition: margin-left .5s;
+  padding: 16px;
+  background-color: #ffffff;
+  margin-bottom: 20px;
+  /* margin-bottom: 40px; */
+}
+
+.box {
+  -webkit-box-shadow: 0 0 0 4px white, 0 6px 4px black;
+  -moz-box-shadow: 0 0 0 4px white, 0 6px 4px black;
+  box-shadow: 0 0 0 4px white, 0 6px 4px black;
+}
+
+footer {
+  width: 100%;
+  position: fixed;
+  bottom: 0px;
+}
+
+@media screen and (max-width: 550px) {
+  footer {
+    width: 100%;
+    position: inherit;
+    bottom: 0px;
+  }
+}

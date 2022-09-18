@@ -1,0 +1,193 @@
+img {
+  width: 20%;
+  float: left;
+}
+
+@media only screen and (max-width: 1000px) {
+  img {
+    width: 40%;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  img {
+    width: 90%;
+  }
+}
+
+.imageFix {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  margin-left: 10px;
+  margin-bottom: 20px;
+}
+
+.content {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.wrap {
+  margin-left: 20px;
+  display: block;
+  padding-left: 20%;
+}
+
+textarea {
+  display: block;
+  height: 125px;
+  width: 95%;
+}
+
+@media only screen and (max-width: 1000px) {
+  .wrap {
+    margin-top: 20px;
+    padding-left: 0%;
+  }
+}
+
+.btn-primary {
+  margin-top: 10px;
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #fd0d0d;
+  --bs-btn-border-color: #fd0d0d;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #c26464;
+  --bs-btn-hover-border-color: #cd3b3b;
+  --bs-btn-focus-shadow-rgb: 100, 100, 100;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #ca0a0a;
+  --bs-btn-active-border-color: #bd0a0a;
+  --bs-btn-active-shadow: inset 0 3px 5pxrgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #bd3d3d;
+  --bs-btn-disabled-border-color: #e50a0a;
+}
+
+#errorMessage {
+  color: #bd0a0a;
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
+.column2 {
+  width: 50%;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.right-border {
+  border-right: solid 3px rgb(201, 189, 189);
+}
+
+.left-border {
+  border-left: solid 3px rgb(201, 189, 189);
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other on screens that are smaller than 600 px */
+@media screen and (max-width: 600px) {
+  .column2 {
+    width: 100%;
+  }
+}
+
+footer {
+  width: 100%;
+  position: inherit;
+  bottom: 0px;
+}
+
+/* .dropdown {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+} */
+
+.form-select {
+  display: block;
+  margin: 0 auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  width: 200px;
+}
+
+.name {
+  margin: 20px;
+}
+
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid rgb(13, 8, 8);
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: rgb(22, 16, 16) transparent transparent transparent;
+}
+
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+#load {
+  text-align: center;
+}
+
+.table-cell {
+  word-wrap: break-word;
+  border-bottom: solid 1px rgb(201, 189, 189);
+  padding: 5px;
+}
+
+.table-body {}
+
+.mtable {
+  table-layout: fixed;
+  width: 90%;
+}
+
+#table-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 60vh;
+  overflow-y: scroll;
+  border: solid 1px rgb(201, 189, 189);
+  border-radius: 0.4rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 3px;
+  margin-right: 3px;
+  background-color: white;
+}
