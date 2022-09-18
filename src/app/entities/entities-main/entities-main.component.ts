@@ -80,9 +80,9 @@ export class EntitiesMainComponent implements OnInit {
 
     for (let i in this.dataDB) {
       this.oneJSON[i] = this.dataDB[i];
+      this.mainLinks[i] = [];
       for (let j in this.dataDB[i]) {
-        console.log(this.dataDB[i][j]);
-        //this.mainLinks[i][j] = this.dataDB[i][j].object;
+        this.mainLinks[i][j] = this.dataDB[i][j].object;
         var words = this.dataDB[i][j].predicate.split('/');
         this.dataDB[i][j].predicate = words[words.length - 1];
         words = this.dataDB[i][j].object.split('/');
@@ -90,8 +90,7 @@ export class EntitiesMainComponent implements OnInit {
       }
     }
 
-    //console.log(this.mainLinks);
-    // console.log(this.dataDB);
+    console.log(this.mainLinks);
     // this.makeTable(this.dataDB);
   }
 
