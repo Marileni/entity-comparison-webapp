@@ -11,64 +11,163 @@
     <button type="button" class="btn btn-primary select" (click)="change()">Change</button>
   </div>
 
+
+  <select #mode class="form-select" aria-label="Default select example" (change)="changeMode(mode.value)">
+    <option value="0">Tables</option>
+    <option value="1">Images</option>
+    <option value="2">Wikipedia</option>
+    <option value="3">Common of entities</option>
+  </select>
+
   <div *ngIf=!loading>
-    <select class="form-select" aria-label="Default select example">
-      <option selected>Tables</option>
-      <option value="1">Images</option>
-      <option value="2">Wikipedia</option>
-    </select>
+    <div *ngIf="modeChange == 0">
+      <div id="table-container">
 
-    <div class="name">Aristotle & Socrates</div>
-    <div class="name">Aristotle & Socrates</div>
-    <div id="table-container">
+        <!-- <div class="column2 right-border" *ngFor="let ent of oneJSON; let i = index"> -->
+        <div *ngFor="let ent of oneJSON; let i = index">
+          <div class="column2 right-border" *ngIf="changeEntity == i">
+            <div class="tableTitle"><span class="titleBold">Entity:</span> <a href="{{nameMainEntities[i]}}">
+                {{nameMainEntities[i]}}</a></div>
+            <div>
+              <table class="mtable">
+                <thead>
+                  <tr>
+                    <th>Predicate</th>
+                    <th>Object</th>
+                  </tr>
+                </thead>
+                <tbody class="table-body">
+                  <tr *ngFor="let user of oneJSON[i]; let j = index">
+                    <td class="table-cell">{{ user.predicate }} </td>
+                    <td class="table-cell"><a href="{{mainLinks[0][j]}}">{{ user.object }}</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
 
-      <div class="column2 right-border">
-        <table class="mtable">
-          <thead>
-            <tr>
-              <th>Predicate</th>
-              <th>Object</th>
-            </tr>
-          </thead>
-          <tbody class="table-body">
-            <tr *ngFor="let user of oneJSON[0]">
-              <td class="table-cell">{{ user.predicate }}</td>
-              <td class="table-cell"><a href="">{{ user.object }}</a></td>
-            </tr>
-          </tbody>
-        </table>
+        <!-- <div class="name">Socrates</div> -->
+        <!-- <div class="column2 left-border" *ngFor="let ent of oneJSON; let k = index"> -->
+        <div *ngFor="let ent of otherJSON; let k = index">
+          <div class="column2 left-border" *ngIf="changeOtherEntity == k">
+            <div class="tableTitle"><span class="titleBold">Entity:</span> <a href="{{nameOtherEntities[k]}}">
+                {{nameOtherEntities[k]}}</a></div>
+            <div>
+              <table class="mtable">
+                <thead>
+                  <tr>
+                    <th>Predicate</th>
+                    <th>Object</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of otherJSON[k]; let l = index">
+                    <td class="table-cell">{{ user.predicate }}</td>
+                    <td class="table-cell"><a href="{{otherLinks[0][l]}}">{{ user.object }}</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- <app-entities-other></app-entities-other> -->
       </div>
 
-      <!-- <div class="name">Socrates</div> -->
-      <div class="column2 left-border">
-        <table class="mtable">
-          <thead>
-            <tr>
-              <th>Predicate</th>
-              <th>Object</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let user of otherJSON[0]">
-              <td class="table-cell">{{ user.predicate }}</td>
-              <td class="table-cell">{{ user.object }}</td>
-            </tr>
-          </tbody>
-        </table>
+
+      <div class="buttonContainer">
+        <div class="nextPrevButtons">
+          <button type="button" class="btn btn-primary select prvEnt" (click)="prvEntity()">Previous main
+            entity</button>
+          <div>|</div>
+          <button type="button" class="btn btn-primary select nextEnt" (click)="nextEntity()">Next main entity</button>
+        </div>
+
+        <div class="nextPrevButtons">
+          <button type="button" class="btn btn-primary select prvEnt" (click)="prvOtherEntity()">Previous other
+            Entity</button>
+          <div>|</div>
+          <button type="button" class="btn btn-primary select nextEnt" (click)="nextOtherEntity()">Next other
+            Entity</button>
+        </div>
       </div>
-      <!-- <app-entities-other></app-entities-other> -->
 
     </div>
 
+    <!-- <div class="carousel-item">
+      <img src="{{mainImages[4]}}" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="{{mainImages[5]}}" class="d-block w-100" alt="...">
+    </div> -->
+
+    <div *ngIf="modeChange==1">
+
+      <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" *ngFor="let image of mainImages; let m = index">
+          <div *ngIf="changeImages == m">
+            <div class="carousel-item active">
+              <img src="{{mainImages[m]}}" class="d-block w-100" alt="Image">
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+          data-bs-slide="prev" (click)="changePreviousImage()">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+          data-bs-slide="next" (click)="changeNextImage()">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+
+      <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" *ngFor="let images of otherImages; let p = index">
+          <div *ngIf="changeOtherImages == p">
+            <div class="carousel-item active">
+              <img src="{{otherImages[p]}}" class="d-block w-100" alt="Image">
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+          data-bs-slide="prev" (click)="changeOtherPreviousImage()">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+          data-bs-slide="next" (click)="changeOtherNextImage()">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+
+    </div>
+
+    <div *ngIf="modeChange==2">
+
+      <iframe src="https://en.wikipedia.org/wiki/Aristotle" name="iframe_a" height="600px" width="100%"
+        title="Iframe Aristotle"></iframe>
+
+      <br>
+      <br>
+
+      <iframe src="https://en.wikipedia.org/wiki/Socrates" name="iframe_a" height="600px" width="100%"
+        title="Iframe Socrates"></iframe>
+    </div>
+
+    <div *ngIf="modeChange==3"></div>
 
     <!-- <div class="row1">
     <div class="column2">
       <code [innerHTML]="text"></code>
-    </div>
-    <div class="column2">
+      </div>
+      <div class="column2">
       <code [innerHTML]="text"></code>
+
     </div>
-  </div> -->
+    </div> -->
 
     <!-- <div style="position:absolute; left:100px; right:100px;">
     <div style="position:relative;">

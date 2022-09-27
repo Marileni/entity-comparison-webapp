@@ -9,7 +9,6 @@ export class EntitiesDataService {
   constructor(private http: HttpClient) {}
 
   getEntity(endpoint: string, entity: string) {
-    console.log(environment.URLDBpedia + endpoint + '/' + entity);
     return this.http.get(
       environment.URLDBpedia + endpoint + '/' + entity,
       this.createHeader('application/json')

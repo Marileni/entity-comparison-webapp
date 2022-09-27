@@ -73,10 +73,21 @@ textarea {
 }
 
 .column2 {
-  width: 50%;
+  width: 100%;
   padding: 16px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.tableTitle {
+  margin-bottom: 15px;
+}
+
+.titleBold {
+  font-weight: 800;
+  font-size: medium;
 }
 
 .right-border {
@@ -190,4 +201,35 @@ footer {
   margin-left: 3px;
   margin-right: 3px;
   background-color: white;
+}
+
+
+.nextEnt {
+  margin: 5px;
+}
+
+.prvEnt {
+  margin: 5px;
+}
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.nextPrevButtons {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+#carouselExampleControls {
+  height: 30%;
+}
+
+.d-block {
+  height: 600px;
+  width: 20%;
 }
