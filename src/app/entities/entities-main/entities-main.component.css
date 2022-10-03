@@ -233,3 +233,38 @@ footer {
   height: 600px;
   width: 20%;
 }
+
+.image-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 20px 0 20px;
+}
+
+.image-button-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.wikipedia-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 0 20px 0 20px;
+  width: 100%;
+}
+
+.wiki-page {
+  width: 100%;
+}
+
+.wiki-block {
+  color: red;
+  height: 600px;
+  width: 100%;
+}
