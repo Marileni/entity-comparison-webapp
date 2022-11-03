@@ -61,7 +61,7 @@ img {
 
 footer {
   width: 100%;
-  position: fixed;
+  position: inherit;
   bottom: 0px;
 }
 
@@ -71,4 +71,61 @@ footer {
     position: inherit;
     bottom: 0px;
   }
+}
+
+
+#main-entity {
+  width: 100%;
+}
+
+#OtherEntity {
+  width: 100%;
+}
+
+.right-side {
+  display: flex;
+  width: 60%;
+  margin-left: 40%;
+  align-items: center;
+}
+
+.right-button {
+  margin-top: 5px;
+  display: flex;
+  width: 60%;
+  margin-left: 40%;
+  align-items: center;
+  justify-content: right;
+}
+
+.otherEntityLabel {
+  width: 20%;
+}
+
+.hero-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-field {
+  width: 70%;
+}
+
+.legend-section {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.continue-btn {
+  display: flex;
+  width: 100%;
+  justify-content: end;
+}
+
+.messUrl {
+  color: #bd0a0a;
 }

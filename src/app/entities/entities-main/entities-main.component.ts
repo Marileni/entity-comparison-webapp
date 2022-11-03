@@ -1,5 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { EntitiesDataService } from 'src/app/services/entitiesData.service';
+import {
+  Ientities,
+  IentitiesJSON,
+  IentitiesPO,
+  Ientity,
+  SharedService,
+} from 'src/app/services/shared.service';
 import { environment } from 'src/environments/environment';
 
 interface entitiesComp {
@@ -25,6 +33,12 @@ interface dataContent {
 
 interface Images {
   images: string[];
+}
+
+//new
+interface entitiesFixed {
+  allMainEntities: dataContent[];
+  allOtherEntities: dataContent[][];
 }
 
 @Component({
@@ -66,8 +80,26 @@ export class EntitiesMainComponent implements OnInit {
   changeImages: number = 0;
   changeOtherImages: number = 0;
 
-  constructor(private entitiesService: EntitiesDataService) {
-    this.data = environment.currentJSON;
+  //new
+  allEntities: any;
+  allEntitiesFixedUrl: Ientities = { entities: [] };
+
+  dataEntities: IentitiesJSON = { entities: [] };
+  finalEntities: IentitiesPO = { entities: [] };
+  finalEntitiesUrl: IentitiesPO = { entities: [] };
+
+  constructor(
+    private entitiesService: EntitiesDataService,
+    private router: Router,
+    private sharedService: SharedService
+  ) {
+    this.allEntitiesFixedUrl.entities = [];
+    this.allEntities = this.sharedService.entitiesTransfer;
+    //this.data = environment.currentJSON;
+    // let inputjson = localStorage.getItem('input');
+    // if (inputjson) this.data = inputjson;
+
+    console.log(this.allEntities);
   }
 
   async ngOnInit(): Promise<void> {
@@ -77,11 +109,138 @@ export class EntitiesMainComponent implements OnInit {
 
   async getMainEntity() {
     this.loading = true;
+
+    //Fix the URL
+    for (let i = 0; i < this.allEntities.entities.length; i++) {
+      this.allEntitiesFixedUrl.entities[i] = {
+        mainEntity: '',
+        otherEntity: [],
+      };
+      this.allEntitiesFixedUrl.entities[i].mainEntity =
+        this.allEntities.entities[i].mainEntity.replace(/[/]/gi, '%2F');
+
+      for (
+        let j = 0;
+        j < this.allEntities.entities[i].otherEntity.length;
+        j++
+      ) {
+        this.allEntitiesFixedUrl.entities[i].otherEntity[j] =
+          this.allEntities.entities[i].otherEntity[j].otherEntities.replace(
+            /[/]/gi,
+            '%2F'
+          );
+      }
+    }
+
+    //Get the JSON data
+
+    for (let i = 0; i < this.allEntitiesFixedUrl.entities.length; i++) {
+      this.dataEntities.entities[i] = {
+        mainEntity: '',
+        otherEntity: [],
+      };
+
+      this.dataEntities.entities[i].mainEntity = await this.entitiesService
+        .getEntity(
+          this.database[i],
+          this.allEntitiesFixedUrl.entities[i].mainEntity
+        )
+        .toPromise();
+
+      for (
+        let j = 0;
+        j < this.allEntitiesFixedUrl.entities[i].otherEntity.length;
+        j++
+      ) {
+        console.log(this.allEntitiesFixedUrl.entities[i].otherEntity[j]);
+
+        this.dataEntities.entities[i].otherEntity[j] =
+          await this.entitiesService
+            .getEntity(
+              this.database[i],
+              this.allEntitiesFixedUrl.entities[i].otherEntity[j]
+            )
+            .toPromise();
+      }
+    }
+
+    //Get the final data with the URL
+    for (let i = 0; i < this.dataEntities.entities.length; i++) {
+      this.finalEntities.entities[i] = {
+        mainEntity: [],
+        otherEntity: [],
+      };
+
+      this.finalEntities.entities[i].mainEntity = JSON.parse(
+        this.dataEntities.entities[i].mainEntity
+      );
+      for (
+        let j = 0;
+        j < this.dataEntities.entities[i].otherEntity.length;
+        j++
+      ) {
+        this.finalEntities.entities[i].otherEntity[j] = JSON.parse(
+          this.dataEntities.entities[i].otherEntity[j]
+        );
+      }
+    }
+
+    //Get the final data without the URL
+
+    this.finalEntitiesUrl = this.finalEntities;
+
+    for (let i = 0; i < this.finalEntities.entities.length; i++) {
+      for (
+        let k = 0;
+        k < this.finalEntities.entities[i].mainEntity.length;
+        k++
+      ) {
+        console.log(this.finalEntities.entities[i].mainEntity[k].predicate);
+
+        var words =
+          this.finalEntities.entities[i].mainEntity[k].predicate.split('/');
+        this.finalEntitiesUrl.entities[i].mainEntity[k].predicate =
+          words[words.length - 1];
+
+        words = this.finalEntities.entities[i].mainEntity[k].object.split('/');
+        this.finalEntitiesUrl.entities[i].mainEntity[k].object =
+          words[words.length - 1];
+      }
+
+      for (
+        let j = 0;
+        j < this.finalEntities.entities[i].otherEntity.length;
+        j++
+      ) {
+        for (
+          let k = 0;
+          k < this.finalEntities.entities[i].otherEntity[j].length;
+          k++
+        ) {
+          var words =
+            this.finalEntities.entities[i].otherEntity[j][k].predicate.split(
+              '/'
+            );
+          this.finalEntitiesUrl.entities[i].otherEntity[j][k].predicate =
+            words[words.length - 1];
+
+          words =
+            this.finalEntities.entities[i].otherEntity[j][k].object.split('/');
+          this.finalEntitiesUrl.entities[i].otherEntity[j][k].object =
+            words[words.length - 1];
+        }
+      }
+    }
+
+    //OLD
+
     if (!this.data) {
       this.data =
         '[{"id": 1,"mainEntity": "http://dbpedia.org/resource/Aristotle","downloadData":"http://dbpedia.org/sparql","triplesOfMainEntity": [],"images":[],"entitiesForComparison": [{"entity": "http://dbpedia.org/resource/Socrates","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]},{  "entity": "http://dbpedia.org/resource/Plato","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]}]},{ "id": 2,"mainEntity": "http://dbpedia.org/resource/Heraklion","downloadData":"http://dbpedia.org/sparql","triplesOfMainEntity": [],"images":[],"entitiesForComparison": [{"entity": "http://dbpedia.org/resource/Chania","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]},{  "entity": "http://dbpedia.org/resource/Naxos","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]}]}]';
     }
+
     let obj: JSONInput[] = JSON.parse(this.data);
+
     for (let i in obj) {
       this.nameMainEntities[i] = obj[i].mainEntity;
       this.entityMain[i] = obj[i].mainEntity.replace(/[/]/gi, '%2F');
@@ -92,9 +251,13 @@ export class EntitiesMainComponent implements OnInit {
         .toPromise();
     }
 
+    console.log(this.dataJSON);
+
     for (let i in this.dataJSON) {
       this.dataDB[i] = JSON.parse(this.dataJSON[i]);
     }
+
+    console.log(this.dataDB);
 
     for (let i in this.dataDB) {
       this.oneJSON[i] = this.dataDB[i];
@@ -199,7 +362,7 @@ export class EntitiesMainComponent implements OnInit {
     }
   }
 
-  change() {
+  changeEntities() {
     this.getMainEntity();
     this.getOtherEntity();
   }
@@ -235,9 +398,13 @@ export class EntitiesMainComponent implements OnInit {
       this.modeChange = 2;
       console.log(value);
     } else if (value == '0') {
+      this.modeChange = 0;
       this.getMainEntity();
       this.getOtherEntity();
     } else {
+      this.modeChange = 3;
+      this.getMainEntity();
+      this.getOtherEntity();
     }
   }
 
@@ -340,5 +507,9 @@ export class EntitiesMainComponent implements OnInit {
 
     console.log(this.otherImages);
     this.loading = false;
+  }
+
+  back() {
+    this.router.navigateByUrl('/entities');
   }
 }

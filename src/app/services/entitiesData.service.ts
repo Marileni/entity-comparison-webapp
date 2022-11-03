@@ -10,14 +10,14 @@ export class EntitiesDataService {
 
   getEntity(endpoint: string, entity: string) {
     return this.http.get(
-      environment.URLDBpedia + endpoint + '/' + entity,
+      environment.URLDBpedia + entity,
       this.createHeader('application/json')
     );
   }
 
   getEntityImage(endpoint: string, entity: string) {
     return this.http.get(
-      environment.URLDBpedia + 'images/' + endpoint + '/' + entity,
+      environment.URLDBpedia + 'images/' + entity,
       this.createHeader('application/json')
     );
   }
