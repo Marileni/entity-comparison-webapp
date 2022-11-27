@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { EntitiesDataService } from 'src/app/services/entitiesData.service';
 import {
+  ICommonalities,
+  ICommonalitiesJson,
   Ientities,
   IentitiesJSON,
   IentitiesPO,
   Ientity,
+  IimagesPO,
   SharedService,
 } from 'src/app/services/shared.service';
-import { environment } from 'src/environments/environment';
 
 interface entitiesComp {
   entity: string;
@@ -81,6 +84,7 @@ export class EntitiesMainComponent implements OnInit {
   changeOtherImages: number = 0;
 
   //new
+  //tables
   allEntities: any;
   allEntitiesFixedUrl: Ientities = { entities: [] };
 
@@ -88,29 +92,94 @@ export class EntitiesMainComponent implements OnInit {
   finalEntities: IentitiesPO = { entities: [] };
   finalEntitiesUrl: IentitiesPO = { entities: [] };
 
+  nextCompBtn: boolean = false;
+  previousCompBtn: boolean = true;
+
+  nextEntBtn: boolean = false;
+  previousEntBtn: boolean = true;
+
+  //images
+  dataImages: IentitiesJSON = { entities: [] };
+  finalImages: IimagesPO = { entities: [] };
+
+  changeOtherEntityImage: number = 0;
+
+  previousImage1: boolean = true;
+  nextImage1: boolean = true;
+
+  previousImage2: boolean = true;
+  nextImage2: boolean = true;
+
+  previousImageEntity: boolean = true;
+  nextImageEntity: boolean = true;
+
+  previousImageComp: boolean = true;
+  nextImageComp: boolean = true;
+
+  errorInImage1: boolean = false;
+  errorInImage2: boolean = false;
+
+  changeImagesOnError1: number = 1;
+  changeImagesOnError2: number = 1;
+
+  //wikipedia
+  changeCompWiki: number = 0;
+  changeEntityWiki: number = 0;
+
+  entitiesWithUrl: Ientities = { entities: [] };
+  previousWikiEntity: boolean = false;
+  nextWikiEntity: boolean = false;
+
+  previousWikiComp: boolean = true;
+  nextWikiComp: boolean = true;
+
+  //common entities
+  commonEntities: ICommonalities = { entities: [] };
+  commonEntitiesUrl: ICommonalities = { entities: [] };
+  commonEntitiesJson: any = { entities: { common: [] } };
+
+  commonLength: string = '';
+
+  //specific predicate
+
   constructor(
     private entitiesService: EntitiesDataService,
     private router: Router,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private sanitizer: DomSanitizer
   ) {
-    this.allEntitiesFixedUrl.entities = [];
-    this.allEntities = this.sharedService.entitiesTransfer;
-    //this.data = environment.currentJSON;
-    // let inputjson = localStorage.getItem('input');
-    // if (inputjson) this.data = inputjson;
-
+    var value: any = localStorage.getItem('data');
+    this.allEntities = JSON.parse(value);
     console.log(this.allEntities);
   }
 
   async ngOnInit(): Promise<void> {
-    await this.getMainEntity();
-    this.getOtherEntity();
+    this.fixUrl();
+    await this.fixEntitiesTable();
   }
 
-  async getMainEntity() {
-    this.loading = true;
+  async changeMode(value: string) {
+    if (value == '1') {
+      this.modeChange = 1;
+      this.getImages();
+    } else if (value == '2') {
+      this.modeChange = 2;
+      this.fixWikipedia();
+    } else if (value == '0') {
+      this.modeChange = 0;
+      await this.fixEntitiesTable();
+    } else if (value == '3') {
+      this.modeChange = 3;
+      this.getCommonalities();
+    } else {
+      this.modeChange = 4;
+      //this.getCommonalities();
+    }
+  }
 
-    //Fix the URL
+  //Fix the URL
+  fixUrl() {
+    this.allEntitiesFixedUrl.entities = [];
     for (let i = 0; i < this.allEntities.entities.length; i++) {
       this.allEntitiesFixedUrl.entities[i] = {
         mainEntity: '',
@@ -131,9 +200,12 @@ export class EntitiesMainComponent implements OnInit {
           );
       }
     }
+  }
+
+  async fixEntitiesTable() {
+    this.loading = true;
 
     //Get the JSON data
-
     for (let i = 0; i < this.allEntitiesFixedUrl.entities.length; i++) {
       this.dataEntities.entities[i] = {
         mainEntity: '',
@@ -186,16 +258,20 @@ export class EntitiesMainComponent implements OnInit {
     }
 
     //Get the final data without the URL
-
-    this.finalEntitiesUrl = this.finalEntities;
-
     for (let i = 0; i < this.finalEntities.entities.length; i++) {
+      this.finalEntitiesUrl.entities[i] = {
+        mainEntity: [],
+        otherEntity: [],
+      };
       for (
         let k = 0;
         k < this.finalEntities.entities[i].mainEntity.length;
         k++
       ) {
-        console.log(this.finalEntities.entities[i].mainEntity[k].predicate);
+        this.finalEntitiesUrl.entities[i].mainEntity[k] = {
+          predicate: '',
+          object: '',
+        };
 
         var words =
           this.finalEntities.entities[i].mainEntity[k].predicate.split('/');
@@ -212,11 +288,18 @@ export class EntitiesMainComponent implements OnInit {
         j < this.finalEntities.entities[i].otherEntity.length;
         j++
       ) {
+        this.finalEntitiesUrl.entities[i].otherEntity[j] = [];
+
         for (
           let k = 0;
           k < this.finalEntities.entities[i].otherEntity[j].length;
           k++
         ) {
+          this.finalEntitiesUrl.entities[i].otherEntity[j][k] = {
+            predicate: '',
+            object: '',
+          };
+
           var words =
             this.finalEntities.entities[i].otherEntity[j][k].predicate.split(
               '/'
@@ -232,282 +315,426 @@ export class EntitiesMainComponent implements OnInit {
       }
     }
 
-    //OLD
+    console.log(this.finalEntities);
+    console.log(this.finalEntitiesUrl);
 
-    if (!this.data) {
-      this.data =
-        '[{"id": 1,"mainEntity": "http://dbpedia.org/resource/Aristotle","downloadData":"http://dbpedia.org/sparql","triplesOfMainEntity": [],"images":[],"entitiesForComparison": [{"entity": "http://dbpedia.org/resource/Socrates","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]},{  "entity": "http://dbpedia.org/resource/Plato","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]}]},{ "id": 2,"mainEntity": "http://dbpedia.org/resource/Heraklion","downloadData":"http://dbpedia.org/sparql","triplesOfMainEntity": [],"images":[],"entitiesForComparison": [{"entity": "http://dbpedia.org/resource/Chania","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]},{  "entity": "http://dbpedia.org/resource/Naxos","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]}]}]';
+    if (this.changeEntity + 1 == this.allEntitiesFixedUrl.entities.length) {
+      this.nextCompBtn = true;
+    } else {
+      this.nextCompBtn = false;
     }
 
-    let obj: JSONInput[] = JSON.parse(this.data);
-
-    for (let i in obj) {
-      this.nameMainEntities[i] = obj[i].mainEntity;
-      this.entityMain[i] = obj[i].mainEntity.replace(/[/]/gi, '%2F');
-      this.database[i] = obj[i].downloadData.replace(/[/]/gi, '%2F');
-
-      this.dataJSON[i] = await this.entitiesService
-        .getEntity(this.database[i], this.entityMain[i])
-        .toPromise();
+    if (
+      this.changeOtherEntity + 1 ==
+      this.allEntitiesFixedUrl.entities[0].otherEntity.length
+    ) {
+      this.nextEntBtn = true;
+    } else {
+      this.nextEntBtn = false;
     }
 
-    console.log(this.dataJSON);
-
-    for (let i in this.dataJSON) {
-      this.dataDB[i] = JSON.parse(this.dataJSON[i]);
-    }
-
-    console.log(this.dataDB);
-
-    for (let i in this.dataDB) {
-      this.oneJSON[i] = this.dataDB[i];
-      this.mainLinks[i] = [];
-      for (let j in this.dataDB[i]) {
-        this.mainLinks[i][j] = this.dataDB[i][j].object;
-        var words = this.dataDB[i][j].predicate.split('/');
-        this.dataDB[i][j].predicate = words[words.length - 1];
-        words = this.dataDB[i][j].object.split('/');
-        this.dataDB[i][j].object = words[words.length - 1];
-      }
-    }
-
-    console.log(this.oneJSON);
-
-    console.log(this.mainLinks);
-    // this.makeTable(this.dataDB);
-  }
-
-  async getOtherEntity() {
-    let obj: JSONInput[] = JSON.parse(this.data);
-    var k = 0;
-    for (let i in obj) {
-      for (let j in obj[i].entitiesForComparison) {
-        this.nameOtherEntities[k] = obj[i].entitiesForComparison[j].entity;
-        this.entityMain[k] = obj[i].entitiesForComparison[j].entity.replace(
-          /[/]/gi,
-          '%2F'
-        );
-        this.database[k] = obj[i].entitiesForComparison[j].downloadData.replace(
-          /[/]/gi,
-          '%2F'
-        );
-        k += 1;
-      }
-    }
-
-    for (let i in this.entityMain) {
-      this.otherDataJSON[i] = await this.entitiesService
-        .getEntity(this.database[i], this.entityMain[i])
-        .toPromise();
-    }
-
-    for (let i in this.otherDataJSON) {
-      this.dataDB[i] = JSON.parse(this.otherDataJSON[i]);
-    }
-
-    for (let i in this.dataDB) {
-      this.otherJSON[i] = this.dataDB[i];
-      this.otherLinks[i] = [];
-      for (let j in this.dataDB[i]) {
-        this.otherLinks[i][j] = this.dataDB[i][j].object;
-        var words = this.dataDB[i][j].predicate.split('/');
-        this.dataDB[i][j].predicate = words[words.length - 1];
-        words = this.dataDB[i][j].object.split('/');
-        this.dataDB[i][j].object = words[words.length - 1];
-      }
-    }
-
-    console.log(this.otherJSON);
-    console.log(this.otherLinks);
-    // this.makeTable(this.dataDB);
     this.loading = false;
   }
 
-  // makeTable(myObj: dataContent[][]) {
-  //   this.text = "<table class='table table-hover table-bordered'>";
-  //   this.text += '<tr><th>Predicate</th><th>Object</th></tr>';
-  //   for (let i in myObj) {
-  //     for (let j in myObj[i]) {
-  //       this.text += '<tr><td>' + myObj[i][j].predicate + '</td>';
-  //       this.text += '<td>' + myObj[i][j].object + '</td></tr>';
-  //     }
-  //   }
-  //   this.text += '</table>';
-
-  //   console.log(this.text);
-  // }
-
-  IsJsonString(str: string) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
+  ValidURL(link: any) {
+    var regex =
+      /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
+    if (!regex.test(link)) {
       return false;
-    }
-    return true;
-  }
-
-  beautify() {
-    if (this.IsJsonString(this.data)) {
-      var obj = JSON.parse(this.data);
-      var pretty = JSON.stringify(obj, undefined, 4);
-      this.appearError = false;
-      this.data = pretty;
     } else {
-      this.appearError = true;
-      if (this.data == '' || this.data == undefined)
-        this.message = 'Enter a JSON format.';
-      else
-        this.message =
-          'You entered a wrong JSON format. Please enter a valid one.';
+      return true;
     }
-  }
-
-  changeEntities() {
-    this.getMainEntity();
-    this.getOtherEntity();
   }
 
   nextEntity() {
     this.changeEntity += 1;
     this.changeOtherEntity = 2;
+
+    if (this.changeEntity == this.allEntitiesFixedUrl.entities.length) {
+      this.nextCompBtn = true;
+    } else {
+      this.nextCompBtn = false;
+    }
+
     console.log(this.changeEntity);
   }
 
   prvEntity() {
     this.changeEntity -= 1;
     this.changeOtherEntity = 0;
+
+    if (this.changeEntity == 0) {
+      this.previousCompBtn = true;
+    } else {
+      this.previousCompBtn = false;
+    }
+
     console.log(this.changeEntity);
   }
 
   nextOtherEntity() {
     this.changeOtherEntity += 1;
+    this.previousEntBtn = false;
+    if (
+      this.changeOtherEntity + 1 ==
+      this.allEntitiesFixedUrl.entities[0].otherEntity.length
+    ) {
+      this.nextEntBtn = true;
+    }
     console.log(this.changeOtherEntity);
   }
 
   prvOtherEntity() {
     this.changeOtherEntity -= 1;
+
+    if (this.changeOtherEntity == 0) {
+      this.previousEntBtn = true;
+    }
+
+    if (
+      this.changeOtherEntity + 1 !=
+      this.allEntitiesFixedUrl.entities[0].otherEntity.length
+    ) {
+      this.nextEntBtn = false;
+    }
     console.log(this.changeOtherEntity);
   }
 
-  changeMode(value: string) {
-    console.log(value);
-    if (value == '1') {
-      this.modeChange = 1;
-      this.getMainImages();
-    } else if (value == '2') {
-      this.modeChange = 2;
-      console.log(value);
-    } else if (value == '0') {
-      this.modeChange = 0;
-      this.getMainEntity();
-      this.getOtherEntity();
+  async getImages() {
+    this.loading = true;
+
+    //Get the JSON data
+    for (let i = 0; i < this.allEntitiesFixedUrl.entities.length; i++) {
+      this.dataImages.entities[i] = {
+        mainEntity: '',
+        otherEntity: [],
+      };
+      this.dataImages.entities[i].mainEntity = await this.entitiesService
+        .getEntityImage(
+          this.database[i],
+          this.allEntitiesFixedUrl.entities[i].mainEntity
+        )
+        .toPromise();
+
+      for (
+        let j = 0;
+        j < this.allEntitiesFixedUrl.entities[i].otherEntity.length;
+        j++
+      ) {
+        this.dataImages.entities[i].otherEntity[j] = await this.entitiesService
+          .getEntityImage(
+            this.database[i],
+            this.allEntitiesFixedUrl.entities[i].otherEntity[j]
+          )
+          .toPromise();
+      }
+    }
+
+    //Get the final data with the URL
+    for (let i = 0; i < this.dataImages.entities.length; i++) {
+      this.finalImages.entities[i] = {
+        mainEntity: { images: [] },
+        otherEntity: [],
+      };
+
+      this.finalImages.entities[i].mainEntity = JSON.parse(
+        this.dataImages.entities[i].mainEntity
+      );
+      for (let j = 0; j < this.dataImages.entities[i].otherEntity.length; j++) {
+        this.finalImages.entities[i].otherEntity[j] = JSON.parse(
+          this.dataImages.entities[i].otherEntity[j]
+        );
+      }
+    }
+
+    console.log(this.finalImages);
+
+    this.changeImageOtherEntities();
+
+    this.changeImagesCarousel1();
+    this.changeImagesCarousel2();
+
+    this.loading = false;
+  }
+
+  imageError1(e: any) {
+    console.log('Error');
+    console.log(e);
+    this.changeImages += this.changeImagesOnError1;
+    this.changeImagesCarousel1();
+    //this.errorInImage1 = true;
+  }
+
+  imageError2(e: any) {
+    console.log('Error');
+    console.log(e);
+    this.changeOtherImages += this.changeImagesOnError2;
+    this.changeImagesCarousel2();
+    //this.errorInImage2 = true;
+  }
+
+  changeImageOtherEntities() {
+    if (this.changeOtherEntityImage == 0) {
+      this.previousImageEntity = true;
     } else {
-      this.modeChange = 3;
-      this.getMainEntity();
-      this.getOtherEntity();
+      this.previousImageEntity = false;
+    }
+
+    if (
+      this.changeOtherEntityImage + 1 ==
+      this.finalImages.entities[0].otherEntity.length
+    ) {
+      this.nextImageEntity = true;
+    } else {
+      this.nextImageEntity = false;
+    }
+  }
+
+  changeImagesCarousel1() {
+    this.errorInImage1 = false;
+    if (this.changeImages == 0) {
+      this.changeImagesOnError1 = 1;
+      this.previousImage1 = true;
+    } else {
+      this.previousImage1 = false;
+    }
+
+    if (
+      this.changeImages + 1 ==
+      this.finalImages.entities[0].mainEntity.images.length
+    ) {
+      this.changeImagesOnError1 = -1;
+      this.nextImage1 = true;
+    } else {
+      this.nextImage1 = false;
+    }
+  }
+
+  changeImagesCarousel2() {
+    this.errorInImage2 = false;
+    if (this.changeOtherImages == 0) {
+      this.changeImagesOnError2 = 1;
+      this.previousImage2 = true;
+    } else {
+      this.previousImage2 = false;
+    }
+
+    if (
+      this.changeOtherImages + 1 ==
+      this.finalImages.entities[0].otherEntity[0].images.length
+    ) {
+      this.changeImagesOnError2 = -1;
+      this.nextImage2 = true;
+    } else {
+      this.nextImage2 = false;
     }
   }
 
   changePreviousImage() {
+    this.changeImagesOnError1 = -1;
     this.changeImages -= 1;
+    this.changeImagesCarousel1();
   }
 
   changeNextImage() {
+    this.changeImagesOnError1 = 1;
     this.changeImages += 1;
+    this.changeImagesCarousel1();
   }
 
   changeOtherPreviousImage() {
+    this.changeImagesOnError2 = -1;
     this.changeOtherImages -= 1;
+    this.changeImagesCarousel2();
   }
 
   changeOtherNextImage() {
+    this.changeImagesOnError2 = 1;
     this.changeOtherImages += 1;
+    this.changeImagesCarousel2();
   }
 
-  async getMainImages() {
+  imagesPrvEntity() {}
+
+  imagesNextEntity() {}
+
+  imagesPrvOtherEntity() {
+    this.changeOtherImages = 0;
+    this.changeOtherEntityImage -= 1;
+    this.changeImageOtherEntities();
+    this.changeImagesCarousel2();
+  }
+
+  imagesNextOtherEntity() {
+    this.changeOtherImages = 0;
+    this.changeOtherEntityImage += 1;
+    this.changeImageOtherEntities();
+    this.changeImagesCarousel2();
+  }
+
+  fixWikipedia() {
     this.loading = true;
-    if (!this.data) {
-      this.data =
-        '[{"id": 1,"mainEntity": "http://dbpedia.org/resource/Aristotle","downloadData":"http://dbpedia.org/sparql","triplesOfMainEntity": [],"images":[],"entitiesForComparison": [{"entity": "http://dbpedia.org/resource/Socrates","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]},{  "entity": "http://dbpedia.org/resource/Plato","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]}]},{ "id": 2,"mainEntity": "http://dbpedia.org/resource/Heraklion","downloadData":"http://dbpedia.org/sparql","triplesOfMainEntity": [],"images":[],"entitiesForComparison": [{"entity": "http://dbpedia.org/resource/Chania","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]},{  "entity": "http://dbpedia.org/resource/Naxos","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]}]}]';
-    }
-    let obj: JSONInput[] = JSON.parse(this.data);
-    for (let i in obj) {
-      this.nameMainEntities[i] = obj[i].mainEntity;
-      this.entityMain[i] = obj[i].mainEntity.replace(/[/]/gi, '%2F');
-      this.database[i] = obj[i].downloadData.replace(/[/]/gi, '%2F');
 
-      this.dataJSON[i] = await this.entitiesService
-        .getEntityImage(this.database[i], this.entityMain[i])
-        .toPromise();
-    }
+    for (let i = 0; i < this.allEntities.entities.length; i++) {
+      this.entitiesWithUrl.entities[i] = {
+        mainEntity: '',
+        otherEntity: [],
+      };
 
-    // console.log(this.dataJSON);
-    var temporary: any[] = [];
-    for (let i in this.dataJSON) {
-      temporary[i] = JSON.parse(this.dataJSON[i]);
-    }
+      let words = this.allEntities.entities[i].mainEntity.split('/');
 
-    var m: number = 0;
-    //console.log(temporary);
-    for (let i in temporary) {
-      for (let j in temporary[i]) {
-        for (let k in temporary[i][j]) {
-          //console.log(temporary[i][j][k]);
-          this.mainImages[m] = temporary[i][j][k];
-          m = m + 1;
-        }
+      this.entitiesWithUrl.entities[i].mainEntity =
+        'https://en.wikipedia.org/wiki/' + words[words.length - 1];
+
+      for (
+        let j = 0;
+        j < this.allEntities.entities[i].otherEntity.length;
+        j++
+      ) {
+        let words =
+          this.allEntities.entities[i].otherEntity[j].otherEntities.split('/');
+
+        this.entitiesWithUrl.entities[i].otherEntity[j] =
+          'https://en.wikipedia.org/wiki/' + words[words.length - 1];
       }
     }
 
-    //console.log(this.mainImages);
-    //this.loading = false;
-    this.getOtherImages();
-  }
-
-  async getOtherImages() {
-    let obj: JSONInput[] = JSON.parse(this.data);
-    var k = 0;
-    for (let i in obj) {
-      for (let j in obj[i].entitiesForComparison) {
-        this.nameOtherEntities[k] = obj[i].entitiesForComparison[j].entity;
-        this.entityMain[k] = obj[i].entitiesForComparison[j].entity.replace(
-          /[/]/gi,
-          '%2F'
-        );
-        this.database[k] = obj[i].entitiesForComparison[j].downloadData.replace(
-          /[/]/gi,
-          '%2F'
-        );
-        k += 1;
-      }
-    }
-
-    for (let i in this.entityMain) {
-      this.otherDataJSON[i] = await this.entitiesService
-        .getEntityImage(this.database[i], this.entityMain[i])
-        .toPromise();
-    }
-
-    var temporary: any[] = [];
-    for (let i in this.otherDataJSON) {
-      temporary[i] = JSON.parse(this.otherDataJSON[i]);
-    }
-
-    var m: number = 0;
-    console.log(temporary);
-    for (let i in temporary) {
-      for (let j in temporary[i]) {
-        for (let k in temporary[i][j]) {
-          console.log(temporary[i][j][k]);
-          this.otherImages[m] = temporary[i][j][k];
-          m = m + 1;
-        }
-      }
-    }
-
-    console.log(this.otherImages);
+    this.changeWikiOtherEntities();
     this.loading = false;
   }
+
+  changeWikiOtherEntities() {
+    if (this.changeEntityWiki == 0) {
+      this.previousWikiEntity = true;
+    } else {
+      this.previousWikiEntity = false;
+    }
+
+    if (
+      this.changeEntityWiki + 1 ==
+      this.entitiesWithUrl.entities[0].otherEntity.length
+    ) {
+      this.nextWikiEntity = true;
+    } else {
+      this.nextWikiEntity = false;
+    }
+  }
+
+  wikipediaPrvComp() {}
+
+  wikipediaNextComp() {}
+
+  wikipediaPrvEntity() {
+    this.changeEntityWiki -= 1;
+    this.changeWikiOtherEntities();
+  }
+
+  wikipediaNextEntity() {
+    this.changeEntityWiki += 1;
+    this.changeWikiOtherEntities();
+  }
+
+  async getCommonalities() {
+    this.loading = true;
+
+    console.log(this.allEntitiesFixedUrl);
+    //Get the JSON data
+    for (let i = 0; i < this.allEntitiesFixedUrl.entities.length; i++) {
+      this.commonEntitiesJson.entities[i] = { common: [] };
+      for (
+        let j = 0;
+        j < this.allEntitiesFixedUrl.entities[i].otherEntity.length;
+        j++
+      ) {
+        this.commonEntitiesJson.entities[i].common[j] = [];
+        // console.log(
+        //   await this.entitiesService
+        //     .getEntityCommonalities(
+        //       this.allEntitiesFixedUrl.entities[i].mainEntity,
+        //       this.allEntitiesFixedUrl.entities[i].otherEntity[j]
+        //     )
+        //     .toPromise()
+        // );
+        this.commonEntitiesJson.entities[i].common[j] =
+          await this.entitiesService
+            .getEntityCommonalities(
+              this.allEntitiesFixedUrl.entities[i].mainEntity,
+              this.allEntitiesFixedUrl.entities[i].otherEntity[j]
+            )
+            .toPromise();
+      }
+    }
+
+    console.log(this.commonEntitiesJson);
+
+    //Get the final data with the URL
+    for (let i = 0; i < this.commonEntitiesJson.entities.length; i++) {
+      this.commonEntities.entities[i] = { common: [] };
+      for (
+        let j = 0;
+        j < this.commonEntitiesJson.entities[i].common.length;
+        j++
+      ) {
+        this.commonEntities.entities[i].common[j] = {
+          predicate: '',
+          object: '',
+        };
+
+        console.log(
+          JSON.parse(this.commonEntitiesJson.entities[i].common[j].predicate)
+        );
+        this.commonEntities.entities[i].common[j].predicate = JSON.parse(
+          this.commonEntitiesJson.entities[i].common[j].predicate
+        );
+
+        this.commonEntities.entities[i].common[j].object = JSON.parse(
+          this.commonEntitiesJson.entities[i].common[j].object
+        );
+      }
+    }
+
+    console.log(this.commonEntities);
+
+    //Get the final data without the URL
+
+    // this.commonEntitiesUrl = this.commonEntities;
+
+    // for (let i = 0; i < this.commonEntities.entities.length; i++) {
+    //   for (let k = 0; k < this.commonEntities.entities[i].length; k++) {
+    //     console.log(this.commonEntities.entities[i][k].predicate);
+
+    //     var words = this.commonEntities.entities[i][k].predicate.split('/');
+
+    //     this.commonEntitiesUrl.entities[i][k].predicate =
+    //       words[words.length - 1];
+
+    //     words = this.commonEntities.entities[i][k].object.split('/');
+    //     this.commonEntitiesUrl.entities[i][k].object = words[words.length - 1];
+    //   }
+    // }
+
+    // console.log(this.commonEntities.entities[0].length);
+    // this.commonLength = this.commonEntities.entities[0].length.toString();
+
+    // if (this.changeEntity + 1 == this.allEntitiesFixedUrl.entities.length) {
+    //   this.nextCompBtn = true;
+    // } else {
+    //   this.nextCompBtn = false;
+    // }
+
+    // if (
+    //   this.changeOtherEntity + 1 ==
+    //   this.allEntitiesFixedUrl.entities[0].otherEntity.length
+    // ) {
+    //   this.nextEntBtn = true;
+    // } else {
+    //   this.nextEntBtn = false;
+    // }
+
+    this.loading = false;
+  }
+
+  getSpecificPredicate() {}
 
   back() {
     this.router.navigateByUrl('/entities');

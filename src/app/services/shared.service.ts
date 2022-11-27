@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 //Before the request
@@ -22,7 +23,7 @@ export interface IentitiesJSON {
   entities: IentityJSON[];
 }
 
-//After the request
+//After the request for tables
 export interface dataPO {
   predicate: string;
   object: string;
@@ -35,6 +36,34 @@ export interface IentityPO {
 
 export interface IentitiesPO {
   entities: IentityPO[];
+}
+
+//After the request for images
+export interface dataImages {
+  images: string[];
+}
+
+export interface IimagePO {
+  mainEntity: dataImages;
+  otherEntity: dataImages[];
+}
+
+export interface IimagesPO {
+  entities: IimagePO[];
+}
+
+//For Commonalities
+
+export interface ICommonalitiesJson {
+  entities: any[];
+}
+
+export interface ICommonData {
+  common: dataPO[];
+}
+
+export interface ICommonalities {
+  entities: ICommonData[];
 }
 
 @Injectable({

@@ -9,6 +9,7 @@ import { EntitiesMainComponent } from './entities/entities-main/entities-main.co
 import { EntitiesOtherComponent } from './entities/entities-main/entities-other/entities-other.component';
 import { InstructionsComponent } from './instructions/instructions.component';
 import { HttpClientModule } from '@angular/common/http';
+import { SafePipe } from './entities/entities-main/safe.pipe';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { HttpClientModule } from '@angular/common/http';
     EntitiesMainComponent,
     EntitiesOtherComponent,
     InstructionsComponent,
+    SafePipe,
   ],
   imports: [
     BrowserModule,

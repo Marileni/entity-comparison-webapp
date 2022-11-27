@@ -1,27 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
-import { groupBy } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { Ientity, SharedService } from '../services/shared.service';
+
 @Component({
   selector: 'app-entities',
   templateUrl: './entities.component.html',
   styleUrls: ['./entities.component.css'],
 })
 export class EntitiesComponent implements OnInit {
-  data!: string;
-  appearError: boolean = false;
-  message: string = '';
+  //data!: string;
+  //appearError: boolean = false;
+  //message: string = '';
 
-  model: string = '';
-  add: boolean = false;
-  add2: boolean = false;
+  //model: string = '';
+  //add: boolean = false;
+  //add2: boolean = false;
 
   messageUrl: string = '';
   checkUrl: boolean = true;
 
-  countValidUrls: number = 0;
+  //countValidUrls: number = 0;
 
   entities = {
     mainEntity: 'http://dbpedia.org/resource/Aristotle',
@@ -42,8 +41,9 @@ export class EntitiesComponent implements OnInit {
     private formBuilder: FormBuilder,
     private sharedService: SharedService
   ) {
-    this.data =
-      '[{"id": 1,"mainEntity": "http://dbpedia.org/resource/Aristotle","downloadData":"http://dbpedia.org/sparql","triplesOfMainEntity": [],"images":[],"entitiesForComparison": [{"entity": "http://dbpedia.org/resource/Socrates","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]},{  "entity": "http://dbpedia.org/resource/Plato","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]}]},{ "id": 2,"mainEntity": "http://dbpedia.org/resource/Heraklion","downloadData":"http://dbpedia.org/sparql","triplesOfMainEntity": [],"images":[],"entitiesForComparison": [{"entity": "http://dbpedia.org/resource/Chania","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]},{  "entity": "http://dbpedia.org/resource/Naxos","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]}]}]';
+    this.sharedService.clearEntitiesTransfer();
+    // this.data =
+    //   '[{"id": 1,"mainEntity": "http://dbpedia.org/resource/Aristotle","downloadData":"http://dbpedia.org/sparql","triplesOfMainEntity": [],"images":[],"entitiesForComparison": [{"entity": "http://dbpedia.org/resource/Socrates","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]},{  "entity": "http://dbpedia.org/resource/Plato","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]}]},{ "id": 2,"mainEntity": "http://dbpedia.org/resource/Heraklion","downloadData":"http://dbpedia.org/sparql","triplesOfMainEntity": [],"images":[],"entitiesForComparison": [{"entity": "http://dbpedia.org/resource/Chania","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]},{  "entity": "http://dbpedia.org/resource/Naxos","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]}]}]';
   }
 
   ngOnInit(): void {}
@@ -103,6 +103,11 @@ export class EntitiesComponent implements OnInit {
 
   submit(value: any): void {
     this.sharedService.updateEntitiesTransfer(value);
+    localStorage.setItem(
+      'data',
+      JSON.stringify(this.sharedService.entitiesTransfer)
+    );
+
     this.router.navigateByUrl('/entities/select');
   }
 

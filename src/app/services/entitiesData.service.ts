@@ -22,6 +22,13 @@ export class EntitiesDataService {
     );
   }
 
+  getEntityCommonalities(endpoint1: string, endpoint2: string) {
+    return this.http.get(
+      environment.URLDBpedia + 'common/entity/' + endpoint1 + '/' + endpoint2,
+      this.createHeader('application/json')
+    );
+  }
+
   private createHeader(contentType: string): any {
     return {
       headers: new HttpHeaders({ 'Content-Type': contentType }),

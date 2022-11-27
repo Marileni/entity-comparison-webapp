@@ -4,7 +4,6 @@
 
 export const environment = {
   production: false,
-  currentJSON: '',
   URLDBpedia: 'https://localhost:7016/DataDBpedia/',
 };
 

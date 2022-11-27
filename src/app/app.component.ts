@@ -18,6 +18,7 @@ export class AppComponent {
     this.mainStyles = {
       transition: 'margin-left .5s',
       padding: '16px',
+      'z-index': 100,
     };
   }
 
