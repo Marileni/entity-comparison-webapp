@@ -276,3 +276,7 @@ footer {
   font-size: large;
   background-color: floralwhite;
 }
+
+.textMess {
+  text-align: center;
+}

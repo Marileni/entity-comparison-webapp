@@ -292,70 +292,78 @@
 
         <div *ngIf="modeChange == 3">
           <div *ngFor="let ent of commonEntities.entities; let i = index">
-            <div class="column2 right-border" *ngIf="changeEntity == i">
+            <div class="column2 right-border" *ngIf="changeCompCommon == i">
               <div class="tableTitle">
                 <span class="titleBold">Entity:</span>
                 <a href="{{ allEntities.entities[i].mainEntity }}">
                   {{ allEntities.entities[i].mainEntity }}</a>
                 and <span class="titleBold">Entity:</span>
                 <a href="{{
-                    allEntities.entities[i].otherEntity[0].otherEntities
+                    allEntities.entities[i].otherEntity[changeEntityCommon].otherEntities
                   }}">
-                  {{ allEntities.entities[i].otherEntity[0].otherEntities }}</a>
+                  {{ allEntities.entities[i].otherEntity[changeEntityCommon].otherEntities }}</a>
               </div>
 
-              <div>There are {{ commonLength }} commons.</div>
+              <div>There are {{ commonLength.entities[i].total[changeEntityCommon] }} commons.</div>
               <br />
 
-              <div>
-                <table class="mtable">
-                  <thead>
-                    <tr>
-                      <th>Predicate</th>
-                      <th>Object</th>
-                    </tr>
-                  </thead>
-                  <tbody class="table-body">
-                    <tr *ngFor="
-                        let user of commonEntities.entities[i].common;
-                        let j = index
+              <div *ngFor="
+              let user of commonEntities.entities[i].common;
+              let j = index">
+                <div *ngIf="changeEntityCommon == j">
+                  <table class="mtable">
+                    <thead>
+                      <tr>
+                        <th>Predicate</th>
+                        <th>Object</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-body">
+                      <tr *ngFor="
+                        let user of commonEntities.entities[i].common[j];
+                        let k = index
                       ">
-                      <td class="table-cell">
-                        <!-- {{ commonEntitiesUrl.entities[i][j].predicate }} -->
-                      </td>
-                      <td class="table-cell">
-                        <!-- <a href="{{ commonEntities.entities[i][j].object }}">{{
-                          commonEntitiesUrl.entities[i][j].object
-                          }}</a>-->
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                        <td class="table-cell">
+                          {{ commonEntitiesUrl.entities[i].common[j][k].predicate }}
+                        </td>
+                        <td class="table-cell" *ngIf="ValidURL(commonEntities.entities[i].common[j][k].object)">
+                          <a href="{{ commonEntities.entities[i].common[j][k].object }}">{{
+                            commonEntitiesUrl.entities[i].common[j][k].object
+                            }}</a>
+                        </td>
+
+                        <td class="table-cell" *ngIf="!ValidURL(commonEntities.entities[i].common[j][k].object)">
+                          {{ commonEntitiesUrl.entities[i].common[j][k].object }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="image-button-container">
             <div class="nextPrevButtons">
-              <button type="button" class="btn btn-primary select prvEnt" (click)="wikipediaPrvComp()"
-                [disabled]="previousWikiComp">
+              <button type="button" class="btn btn-primary select prvEnt" (click)="commonPrvComp()"
+                [disabled]="previousCommonComp">
                 Previous Comparison
               </button>
               <div>|</div>
-              <button type="button" class="btn btn-primary select nextEnt" (click)="wikipediaNextComp()"
-                [disabled]="nextWikiComp">
+              <button type="button" class="btn btn-primary select nextEnt" (click)="commonNextComp()"
+                [disabled]="nextCommonComp">
                 Next Comparison
               </button>
             </div>
 
             <div class="nextPrevButtons">
-              <button type="button" class="btn btn-primary select prvEnt" (click)="wikipediaPrvEntity()"
-                [disabled]="previousWikiEntity">
+              <button type="button" class="btn btn-primary select prvEnt" (click)="commonPrvEntity()"
+                [disabled]="previousCommonEntity">
                 Previous Entity
               </button>
               <div>|</div>
-              <button type="button" class="btn btn-primary select nextEnt" (click)="wikipediaNextEntity()"
-                [disabled]="nextWikiEntity">
+              <button type="button" class="btn btn-primary select nextEnt" (click)="commonNextEntity()"
+                [disabled]="nextCommonEntity">
                 Next Entity
               </button>
             </div>
@@ -363,44 +371,49 @@
         </div>
 
         <div *ngIf="modeChange == 4">
-          <div *ngFor="let ent of commonEntities.entities; let i = index">
-            <div class="column2 right-border" *ngIf="changeEntity == i">
-              <div class="tableTitle">
-                <span class="titleBold">Entity:</span>
-                <a href="{{ allEntities.entities[i].mainEntity }}">
-                  {{ allEntities.entities[i].mainEntity }}</a>
-                and <span class="titleBold">Entity:</span>
-                <a href="{{
-                    allEntities.entities[i].otherEntity[0].otherEntities
-                  }}">
-                  {{ allEntities.entities[i].otherEntity[0].otherEntities }}</a>
-              </div>
 
-              <div>
-                <table class="mtable">
-                  <thead>
-                    <tr>
-                      <th>Predicate</th>
-                      <th>Object</th>
-                    </tr>
-                  </thead>
-                  <tbody class="table-body">
-                    <tr *ngFor="
-                        let user of commonEntities.entities[i].common;
-                        let j = index
+          <div class="textMess"> The default predicate is '22-rdf-syntax-ns#type'.
+            <br>
+            If you would like to select another, select from the selection box below.
+          </div>
+          <select #mode [disabled]="loading" class="form-select" aria-label="Default select example">
+            <option selected value="0">22-rdf-syntax-ns#type</option>
+            <option value="1">rdf-schema#comment</option>
+            <option value="2">subject</option>
+            <option value="3">depiction</option>
+            <option value="4">wikiPageWikiLink</option>
+          </select>
+          <div *ngFor="
+              let user of commonEntities.entities[0].common;
+              let j = index">
+            <div *ngIf="changeEntityCommon == j">
+              <table class="mtable">
+                <thead>
+                  <tr>
+                    <th>Predicate</th>
+                    <th>Object</th>
+                  </tr>
+                </thead>
+                <tbody class="table-body">
+                  <tr *ngFor="
+                        let user of commonEntities.entities[0].common[j];
+                        let k = index
                       ">
-                      <td class="table-cell">
-                        <!-- {{ commonEntitiesUrl.entities[i][j].predicate }} -->
-                      </td>
-                      <td class="table-cell">
-                        <!-- <a href="{{ commonEntities.entities[i][j].object }}">{{
-                          commonEntitiesUrl.entities[i][j].object
-                          }}</a> -->
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                    <td class="table-cell">
+                      {{ commonEntitiesUrl.entities[0].common[j][k].predicate }}
+                    </td>
+                    <td class="table-cell" *ngIf="ValidURL(commonEntities.entities[0].common[j][k].object)">
+                      <a href="{{ commonEntities.entities[0].common[j][k].object }}">{{
+                        commonEntitiesUrl.entities[0].common[j][k].object
+                        }}</a>
+                    </td>
+
+                    <td class="table-cell" *ngIf="!ValidURL(commonEntities.entities[0].common[j][k].object)">
+                      {{ commonEntitiesUrl.entities[0].common[j][k].object }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 

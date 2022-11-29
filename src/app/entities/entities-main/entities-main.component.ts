@@ -44,6 +44,14 @@ interface entitiesFixed {
   allOtherEntities: dataContent[][];
 }
 
+interface totalNmuber {
+  total: number[];
+}
+
+interface totalCommon {
+  entities: totalNmuber[];
+}
+
 @Component({
   selector: 'app-entities-main',
   templateUrl: './entities-main.component.html',
@@ -136,9 +144,18 @@ export class EntitiesMainComponent implements OnInit {
   //common entities
   commonEntities: ICommonalities = { entities: [] };
   commonEntitiesUrl: ICommonalities = { entities: [] };
-  commonEntitiesJson: any = { entities: { common: [] } };
+  commonEntitiesJson: any = { entities: [] };
 
-  commonLength: string = '';
+  commonLength: totalCommon = { entities: [] };
+
+  changeCompCommon: number = 0;
+  changeEntityCommon: number = 0;
+
+  previousCommonComp: boolean = true;
+  nextCommonComp: boolean = true;
+
+  previousCommonEntity: boolean = true;
+  nextCommonEntity: boolean = true;
 
   //specific predicate
 
@@ -173,7 +190,7 @@ export class EntitiesMainComponent implements OnInit {
       this.getCommonalities();
     } else {
       this.modeChange = 4;
-      //this.getCommonalities();
+      this.getCommonalities();
     }
   }
 
@@ -235,6 +252,8 @@ export class EntitiesMainComponent implements OnInit {
             .toPromise();
       }
     }
+
+    console.log(this.dataEntities);
 
     //Get the final data with the URL
     for (let i = 0; i < this.dataEntities.entities.length; i++) {
@@ -637,58 +656,32 @@ export class EntitiesMainComponent implements OnInit {
   async getCommonalities() {
     this.loading = true;
 
-    console.log(this.allEntitiesFixedUrl);
     //Get the JSON data
     for (let i = 0; i < this.allEntitiesFixedUrl.entities.length; i++) {
-      this.commonEntitiesJson.entities[i] = { common: [] };
+      this.commonEntitiesJson.entities[i] = [];
       for (
         let j = 0;
         j < this.allEntitiesFixedUrl.entities[i].otherEntity.length;
         j++
       ) {
-        this.commonEntitiesJson.entities[i].common[j] = [];
-        // console.log(
-        //   await this.entitiesService
-        //     .getEntityCommonalities(
-        //       this.allEntitiesFixedUrl.entities[i].mainEntity,
-        //       this.allEntitiesFixedUrl.entities[i].otherEntity[j]
-        //     )
-        //     .toPromise()
-        // );
-        this.commonEntitiesJson.entities[i].common[j] =
-          await this.entitiesService
-            .getEntityCommonalities(
-              this.allEntitiesFixedUrl.entities[i].mainEntity,
-              this.allEntitiesFixedUrl.entities[i].otherEntity[j]
-            )
-            .toPromise();
+        this.commonEntitiesJson.entities[i][j] = '';
+        this.commonEntitiesJson.entities[i][j] = await this.entitiesService
+          .getEntityCommonalities(
+            this.allEntitiesFixedUrl.entities[i].mainEntity,
+            this.allEntitiesFixedUrl.entities[i].otherEntity[j]
+          )
+          .toPromise();
       }
     }
-
-    console.log(this.commonEntitiesJson);
 
     //Get the final data with the URL
     for (let i = 0; i < this.commonEntitiesJson.entities.length; i++) {
       this.commonEntities.entities[i] = { common: [] };
-      for (
-        let j = 0;
-        j < this.commonEntitiesJson.entities[i].common.length;
-        j++
-      ) {
-        this.commonEntities.entities[i].common[j] = {
-          predicate: '',
-          object: '',
-        };
-
-        console.log(
-          JSON.parse(this.commonEntitiesJson.entities[i].common[j].predicate)
-        );
-        this.commonEntities.entities[i].common[j].predicate = JSON.parse(
-          this.commonEntitiesJson.entities[i].common[j].predicate
-        );
-
-        this.commonEntities.entities[i].common[j].object = JSON.parse(
-          this.commonEntitiesJson.entities[i].common[j].object
+      for (let j = 0; j < this.commonEntitiesJson.entities[i].length; j++) {
+        this.commonEntities.entities[i].common[j] = [];
+        console.log(JSON.parse(this.commonEntitiesJson.entities[i][j]));
+        this.commonEntities.entities[i].common[j] = JSON.parse(
+          this.commonEntitiesJson.entities[i][j]
         );
       }
     }
@@ -696,42 +689,76 @@ export class EntitiesMainComponent implements OnInit {
     console.log(this.commonEntities);
 
     //Get the final data without the URL
+    for (let i = 0; i < this.commonEntities.entities.length; i++) {
+      this.commonEntitiesUrl.entities[i] = { common: [] };
+      this.commonLength.entities[i] = { total: [] };
+      for (let j = 0; j < this.commonEntities.entities[i].common.length; j++) {
+        this.commonEntitiesUrl.entities[i].common[j] = [];
 
-    // this.commonEntitiesUrl = this.commonEntities;
+        console.log(this.commonEntities.entities[i].common[j].length);
+        this.commonLength.entities[i].total[j] =
+          this.commonEntities.entities[i].common[j].length;
+        for (
+          let k = 0;
+          k < this.commonEntities.entities[i].common[j].length;
+          k++
+        ) {
+          this.commonEntitiesUrl.entities[i].common[j][k] = {
+            predicate: '',
+            object: '',
+          };
 
-    // for (let i = 0; i < this.commonEntities.entities.length; i++) {
-    //   for (let k = 0; k < this.commonEntities.entities[i].length; k++) {
-    //     console.log(this.commonEntities.entities[i][k].predicate);
+          var words =
+            this.commonEntities.entities[i].common[j][k].predicate.split('/');
 
-    //     var words = this.commonEntities.entities[i][k].predicate.split('/');
+          this.commonEntitiesUrl.entities[i].common[j][k].predicate =
+            words[words.length - 1];
 
-    //     this.commonEntitiesUrl.entities[i][k].predicate =
-    //       words[words.length - 1];
+          words =
+            this.commonEntities.entities[i].common[j][k].object.split('/');
 
-    //     words = this.commonEntities.entities[i][k].object.split('/');
-    //     this.commonEntitiesUrl.entities[i][k].object = words[words.length - 1];
-    //   }
-    // }
+          this.commonEntitiesUrl.entities[i].common[j][k].object =
+            words[words.length - 1];
+        }
+      }
+    }
 
-    // console.log(this.commonEntities.entities[0].length);
-    // this.commonLength = this.commonEntities.entities[0].length.toString();
+    this.changesCommonEntity();
 
-    // if (this.changeEntity + 1 == this.allEntitiesFixedUrl.entities.length) {
-    //   this.nextCompBtn = true;
-    // } else {
-    //   this.nextCompBtn = false;
-    // }
-
-    // if (
-    //   this.changeOtherEntity + 1 ==
-    //   this.allEntitiesFixedUrl.entities[0].otherEntity.length
-    // ) {
-    //   this.nextEntBtn = true;
-    // } else {
-    //   this.nextEntBtn = false;
-    // }
-
+    console.log(this.commonEntitiesUrl);
+    console.log(this.commonLength);
     this.loading = false;
+  }
+
+  changesCommonEntity() {
+    if (this.changeEntityCommon == 0) {
+      this.previousCommonEntity = true;
+    } else {
+      this.previousCommonEntity = false;
+    }
+
+    if (
+      this.changeEntityCommon + 1 ==
+      this.commonEntitiesUrl.entities[0].common.length
+    ) {
+      this.nextCommonEntity = true;
+    } else {
+      this.nextCommonEntity = false;
+    }
+  }
+
+  commonPrvComp() {}
+
+  commonNextComp() {}
+
+  commonPrvEntity() {
+    this.changeEntityCommon -= 1;
+    this.changesCommonEntity();
+  }
+
+  commonNextEntity() {
+    this.changeEntityCommon += 1;
+    this.changesCommonEntity();
   }
 
   getSpecificPredicate() {}

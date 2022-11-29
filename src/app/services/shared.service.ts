@@ -59,7 +59,7 @@ export interface ICommonalitiesJson {
 }
 
 export interface ICommonData {
-  common: dataPO[];
+  common: dataPO[][];
 }
 
 export interface ICommonalities {
