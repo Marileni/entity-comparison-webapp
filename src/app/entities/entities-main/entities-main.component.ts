@@ -4,45 +4,12 @@ import { Router } from '@angular/router';
 import { EntitiesDataService } from 'src/app/services/entitiesData.service';
 import {
   ICommonalities,
-  ICommonalitiesJson,
   Ientities,
   IentitiesJSON,
   IentitiesPO,
-  Ientity,
   IimagesPO,
-  SharedService,
+  ISpecificPred,
 } from 'src/app/services/shared.service';
-
-interface entitiesComp {
-  entity: string;
-  downloadData: string;
-  triplesOfEntity: any[];
-  images: any[];
-}
-
-interface JSONInput {
-  id: number;
-  mainEntity: string;
-  downloadData: string;
-  triplesOfMainEntity: any[];
-  images: any[];
-  entitiesForComparison: entitiesComp[];
-}
-
-interface dataContent {
-  predicate: string;
-  object: string;
-}
-
-interface Images {
-  images: string[];
-}
-
-//new
-interface entitiesFixed {
-  allMainEntities: dataContent[];
-  allOtherEntities: dataContent[][];
-}
 
 interface totalNmuber {
   total: number[];
@@ -58,40 +25,9 @@ interface totalCommon {
   styleUrls: ['./entities-main.component.css'],
 })
 export class EntitiesMainComponent implements OnInit {
-  data: string = '';
-  appearError: boolean = false;
-  message: string = '';
-
-  entityMain: string[] = [];
-  database: string[] = [];
-
-  dataJSON: any[] = [];
-  otherDataJSON: any[] = [];
-  text!: string;
-  dataDB: dataContent[][] = [];
-  oneJSON: dataContent[][] = [];
-  otherJSON: dataContent[][] = [];
-
-  mainLinks: string[][] = [];
-  nameMainEntities: string[] = [];
-  otherLinks: string[][] = [];
-  nameOtherEntities: string[] = [];
-
   loading: boolean = false;
-  tableHeader: any;
-
-  changeEntity: number = 0;
-  changeOtherEntity: number = 0;
-
   modeChange: number = 0;
-  imageData!: Images[];
 
-  mainImages: string[] = [];
-  otherImages: string[] = [];
-  changeImages: number = 0;
-  changeOtherImages: number = 0;
-
-  //new
   //tables
   allEntities: any;
   allEntitiesFixedUrl: Ientities = { entities: [] };
@@ -105,6 +41,9 @@ export class EntitiesMainComponent implements OnInit {
 
   nextEntBtn: boolean = false;
   previousEntBtn: boolean = true;
+
+  changeEntity: number = 0;
+  changeOtherEntity: number = 0;
 
   //images
   dataImages: IentitiesJSON = { entities: [] };
@@ -130,6 +69,8 @@ export class EntitiesMainComponent implements OnInit {
   changeImagesOnError1: number = 1;
   changeImagesOnError2: number = 1;
 
+  changeImages: number = 0;
+  changeOtherImages: number = 0;
   //wikipedia
   changeCompWiki: number = 0;
   changeEntityWiki: number = 0;
@@ -158,16 +99,33 @@ export class EntitiesMainComponent implements OnInit {
   nextCommonEntity: boolean = true;
 
   //specific predicate
+  specificPredUrl: ISpecificPred = { entities: [] };
+  specificPredJson: any = { entities: [] };
+
+  specificPred: ISpecificPred = { entities: [] };
+
+  specificComp: number = 0;
+  loadingChange: boolean = false;
+
+  specificPrEntities: IentitiesJSON = { entities: [] };
+  specificPrFinalUrl: IentitiesPO = { entities: [] };
+  specificPrFinal: IentitiesPO = { entities: [] };
+
+  changeCompSpec: number = 0;
+  changeEntitySpec: number = 0;
+
+  previousSpecComp: boolean = true;
+  nextSpecComp: boolean = true;
+
+  previousSpecEntity: boolean = true;
+  nextSpecEntity: boolean = true;
 
   constructor(
     private entitiesService: EntitiesDataService,
-    private router: Router,
-    private sharedService: SharedService,
-    private sanitizer: DomSanitizer
+    private router: Router
   ) {
     var value: any = localStorage.getItem('data');
     this.allEntities = JSON.parse(value);
-    console.log(this.allEntities);
   }
 
   async ngOnInit(): Promise<void> {
@@ -190,7 +148,7 @@ export class EntitiesMainComponent implements OnInit {
       this.getCommonalities();
     } else {
       this.modeChange = 4;
-      this.getCommonalities();
+      this.getSpecificPredicate();
     }
   }
 
@@ -204,7 +162,8 @@ export class EntitiesMainComponent implements OnInit {
       };
       this.allEntitiesFixedUrl.entities[i].mainEntity =
         this.allEntities.entities[i].mainEntity.replace(/[/]/gi, '%2F');
-
+      this.allEntitiesFixedUrl.entities[i].mainEntity =
+        this.allEntitiesFixedUrl.entities[i].mainEntity.replace(/[#]/gi, '%23');
       for (
         let j = 0;
         j < this.allEntities.entities[i].otherEntity.length;
@@ -214,6 +173,12 @@ export class EntitiesMainComponent implements OnInit {
           this.allEntities.entities[i].otherEntity[j].otherEntities.replace(
             /[/]/gi,
             '%2F'
+          );
+
+        this.allEntitiesFixedUrl.entities[i].otherEntity[j] =
+          this.allEntitiesFixedUrl.entities[i].otherEntity[j].replace(
+            /[#]/gi,
+            '%23'
           );
       }
     }
@@ -230,10 +195,7 @@ export class EntitiesMainComponent implements OnInit {
       };
 
       this.dataEntities.entities[i].mainEntity = await this.entitiesService
-        .getEntity(
-          this.database[i],
-          this.allEntitiesFixedUrl.entities[i].mainEntity
-        )
+        .getEntity(this.allEntitiesFixedUrl.entities[i].mainEntity)
         .toPromise();
 
       for (
@@ -241,19 +203,12 @@ export class EntitiesMainComponent implements OnInit {
         j < this.allEntitiesFixedUrl.entities[i].otherEntity.length;
         j++
       ) {
-        console.log(this.allEntitiesFixedUrl.entities[i].otherEntity[j]);
-
         this.dataEntities.entities[i].otherEntity[j] =
           await this.entitiesService
-            .getEntity(
-              this.database[i],
-              this.allEntitiesFixedUrl.entities[i].otherEntity[j]
-            )
+            .getEntity(this.allEntitiesFixedUrl.entities[i].otherEntity[j])
             .toPromise();
       }
     }
-
-    console.log(this.dataEntities);
 
     //Get the final data with the URL
     for (let i = 0; i < this.dataEntities.entities.length; i++) {
@@ -334,9 +289,6 @@ export class EntitiesMainComponent implements OnInit {
       }
     }
 
-    console.log(this.finalEntities);
-    console.log(this.finalEntitiesUrl);
-
     if (this.changeEntity + 1 == this.allEntitiesFixedUrl.entities.length) {
       this.nextCompBtn = true;
     } else {
@@ -374,8 +326,6 @@ export class EntitiesMainComponent implements OnInit {
     } else {
       this.nextCompBtn = false;
     }
-
-    console.log(this.changeEntity);
   }
 
   prvEntity() {
@@ -387,8 +337,6 @@ export class EntitiesMainComponent implements OnInit {
     } else {
       this.previousCompBtn = false;
     }
-
-    console.log(this.changeEntity);
   }
 
   nextOtherEntity() {
@@ -400,7 +348,6 @@ export class EntitiesMainComponent implements OnInit {
     ) {
       this.nextEntBtn = true;
     }
-    console.log(this.changeOtherEntity);
   }
 
   prvOtherEntity() {
@@ -416,7 +363,6 @@ export class EntitiesMainComponent implements OnInit {
     ) {
       this.nextEntBtn = false;
     }
-    console.log(this.changeOtherEntity);
   }
 
   async getImages() {
@@ -429,10 +375,7 @@ export class EntitiesMainComponent implements OnInit {
         otherEntity: [],
       };
       this.dataImages.entities[i].mainEntity = await this.entitiesService
-        .getEntityImage(
-          this.database[i],
-          this.allEntitiesFixedUrl.entities[i].mainEntity
-        )
+        .getEntityImage(this.allEntitiesFixedUrl.entities[i].mainEntity)
         .toPromise();
 
       for (
@@ -441,10 +384,7 @@ export class EntitiesMainComponent implements OnInit {
         j++
       ) {
         this.dataImages.entities[i].otherEntity[j] = await this.entitiesService
-          .getEntityImage(
-            this.database[i],
-            this.allEntitiesFixedUrl.entities[i].otherEntity[j]
-          )
+          .getEntityImage(this.allEntitiesFixedUrl.entities[i].otherEntity[j])
           .toPromise();
       }
     }
@@ -466,8 +406,6 @@ export class EntitiesMainComponent implements OnInit {
       }
     }
 
-    console.log(this.finalImages);
-
     this.changeImageOtherEntities();
 
     this.changeImagesCarousel1();
@@ -477,19 +415,13 @@ export class EntitiesMainComponent implements OnInit {
   }
 
   imageError1(e: any) {
-    console.log('Error');
-    console.log(e);
     this.changeImages += this.changeImagesOnError1;
     this.changeImagesCarousel1();
-    //this.errorInImage1 = true;
   }
 
   imageError2(e: any) {
-    console.log('Error');
-    console.log(e);
     this.changeOtherImages += this.changeImagesOnError2;
     this.changeImagesCarousel2();
-    //this.errorInImage2 = true;
   }
 
   changeImageOtherEntities() {
@@ -656,7 +588,7 @@ export class EntitiesMainComponent implements OnInit {
   async getCommonalities() {
     this.loading = true;
 
-    //Get the JSON data
+    //Get JSON data
     for (let i = 0; i < this.allEntitiesFixedUrl.entities.length; i++) {
       this.commonEntitiesJson.entities[i] = [];
       for (
@@ -679,14 +611,12 @@ export class EntitiesMainComponent implements OnInit {
       this.commonEntities.entities[i] = { common: [] };
       for (let j = 0; j < this.commonEntitiesJson.entities[i].length; j++) {
         this.commonEntities.entities[i].common[j] = [];
-        console.log(JSON.parse(this.commonEntitiesJson.entities[i][j]));
+
         this.commonEntities.entities[i].common[j] = JSON.parse(
           this.commonEntitiesJson.entities[i][j]
         );
       }
     }
-
-    console.log(this.commonEntities);
 
     //Get the final data without the URL
     for (let i = 0; i < this.commonEntities.entities.length; i++) {
@@ -695,7 +625,6 @@ export class EntitiesMainComponent implements OnInit {
       for (let j = 0; j < this.commonEntities.entities[i].common.length; j++) {
         this.commonEntitiesUrl.entities[i].common[j] = [];
 
-        console.log(this.commonEntities.entities[i].common[j].length);
         this.commonLength.entities[i].total[j] =
           this.commonEntities.entities[i].common[j].length;
         for (
@@ -724,9 +653,6 @@ export class EntitiesMainComponent implements OnInit {
     }
 
     this.changesCommonEntity();
-
-    console.log(this.commonEntitiesUrl);
-    console.log(this.commonLength);
     this.loading = false;
   }
 
@@ -761,7 +687,224 @@ export class EntitiesMainComponent implements OnInit {
     this.changesCommonEntity();
   }
 
-  getSpecificPredicate() {}
+  changePredicate(predicate: string) {
+    this.getEntitiesSpecificPre(predicate);
+  }
+
+  async getSpecificPredicate() {
+    this.loading = true;
+
+    //Get JSON data
+    for (let i = 0; i < this.allEntitiesFixedUrl.entities.length; i++) {
+      this.specificPredJson.entities[i] = '';
+      this.specificPredJson.entities[i] = await this.entitiesService
+        .getEntityAllProperties(this.allEntitiesFixedUrl.entities[i].mainEntity)
+        .toPromise();
+    }
+
+    //Get the final data with the URL
+    for (let i = 0; i < this.specificPredJson.entities.length; i++) {
+      this.specificPredUrl.entities[i] = [];
+      this.specificPredUrl.entities[i] = JSON.parse(
+        this.specificPredJson.entities[i]
+      );
+    }
+    //Get the final data with out the URL
+    for (let i = 0; i < this.specificPredUrl.entities.length; i++) {
+      this.specificPred.entities[i] = [];
+
+      for (let j = 0; j < this.specificPredUrl.entities[i].length; j++) {
+        this.specificPred.entities[i][j] = { predicate: '' };
+        var words = this.specificPredUrl.entities[i][j].predicate.split('/');
+        this.specificPred.entities[i][j].predicate = words[words.length - 1];
+      }
+    }
+    this.getEntitiesSpecificPre('22-rdf-syntax-ns#type');
+
+    this.loading = false;
+  }
+
+  getEntitiesSpecificPre(predicate: string) {
+    var predicateUrl: string = '';
+    for (let i = 0; i < this.specificPredUrl.entities.length; i++) {
+      for (let j = 0; j < this.specificPredUrl.entities[i].length; j++) {
+        var words = this.specificPredUrl.entities[i][j].predicate.split('/');
+        if (words.includes(predicate)) {
+          predicateUrl = this.specificPredUrl.entities[i][j].predicate.replace(
+            /[/]/gi,
+            '%2F'
+          );
+          predicateUrl = predicateUrl.replace(/[#]/gi, '%23');
+          this.fixTablesPredicate(predicateUrl);
+        }
+      }
+    }
+  }
+
+  async fixTablesPredicate(pred: string) {
+    this.loadingChange = true;
+
+    //Get the JSON data
+    for (let i = 0; i < this.allEntitiesFixedUrl.entities.length; i++) {
+      this.specificPrEntities.entities[i] = {
+        mainEntity: '',
+        otherEntity: [],
+      };
+
+      this.specificPrEntities.entities[i].mainEntity =
+        await this.entitiesService
+          .getEntitySpecificProperty(
+            this.allEntitiesFixedUrl.entities[i].mainEntity,
+            pred
+          )
+          .toPromise();
+
+      for (
+        let j = 0;
+        j < this.allEntitiesFixedUrl.entities[i].otherEntity.length;
+        j++
+      ) {
+        this.specificPrEntities.entities[i].otherEntity[j] =
+          await this.entitiesService
+            .getEntitySpecificProperty(
+              this.allEntitiesFixedUrl.entities[i].otherEntity[j],
+              pred
+            )
+            .toPromise();
+      }
+    }
+
+    //Get the final data with the URL
+    for (let i = 0; i < this.specificPrEntities.entities.length; i++) {
+      this.specificPrFinalUrl.entities[i] = {
+        mainEntity: [],
+        otherEntity: [],
+      };
+
+      if (this.specificPrEntities.entities[i].mainEntity != 'Error') {
+        this.specificPrFinalUrl.entities[i].mainEntity = JSON.parse(
+          this.specificPrEntities.entities[i].mainEntity
+        );
+      } else {
+        this.specificPrFinalUrl.entities[i].mainEntity = [];
+      }
+
+      for (
+        let j = 0;
+        j < this.specificPrEntities.entities[i].otherEntity.length;
+        j++
+      ) {
+        if (this.specificPrEntities.entities[i].otherEntity[j] != 'Error') {
+          this.specificPrFinalUrl.entities[i].otherEntity[j] = JSON.parse(
+            this.specificPrEntities.entities[i].otherEntity[j]
+          );
+        } else {
+          this.specificPrFinalUrl.entities[i].otherEntity[j] = [];
+        }
+      }
+    }
+
+    //Get the final data without the URL
+    for (let i = 0; i < this.specificPrFinalUrl.entities.length; i++) {
+      this.specificPrFinal.entities[i] = {
+        mainEntity: [],
+        otherEntity: [],
+      };
+      for (
+        let k = 0;
+        k < this.specificPrFinalUrl.entities[i].mainEntity.length;
+        k++
+      ) {
+        this.specificPrFinal.entities[i].mainEntity[k] = {
+          predicate: '',
+          object: '',
+        };
+
+        var words =
+          this.specificPrFinalUrl.entities[i].mainEntity[k].predicate.split(
+            '/'
+          );
+        this.specificPrFinal.entities[i].mainEntity[k].predicate =
+          words[words.length - 1];
+
+        words =
+          this.specificPrFinalUrl.entities[i].mainEntity[k].object.split('/');
+        this.specificPrFinal.entities[i].mainEntity[k].object =
+          words[words.length - 1];
+      }
+
+      for (
+        let j = 0;
+        j < this.specificPrFinalUrl.entities[i].otherEntity.length;
+        j++
+      ) {
+        this.specificPrFinal.entities[i].otherEntity[j] = [];
+
+        for (
+          let k = 0;
+          k < this.specificPrFinalUrl.entities[i].otherEntity[j].length;
+          k++
+        ) {
+          this.specificPrFinal.entities[i].otherEntity[j][k] = {
+            predicate: '',
+            object: '',
+          };
+
+          var words =
+            this.specificPrFinalUrl.entities[i].otherEntity[j][
+              k
+            ].predicate.split('/');
+          this.specificPrFinal.entities[i].otherEntity[j][k].predicate =
+            words[words.length - 1];
+
+          words =
+            this.specificPrFinalUrl.entities[i].otherEntity[j][k].object.split(
+              '/'
+            );
+          this.specificPrFinal.entities[i].otherEntity[j][k].object =
+            words[words.length - 1];
+        }
+      }
+    }
+
+    this.changesSpecificPr();
+    this.loadingChange = false;
+  }
+
+  changesSpecificPr() {
+    if (this.changeEntitySpec == 0) {
+      this.previousSpecEntity = true;
+    } else {
+      this.previousSpecEntity = false;
+    }
+
+    if (
+      this.changeEntitySpec + 1 ==
+      this.specificPrFinal.entities[0].otherEntity.length
+    ) {
+      this.nextSpecEntity = true;
+    } else {
+      this.nextSpecEntity = false;
+    }
+  }
+
+  previousCompSpec() {
+    this.changeCompSpec -= 1;
+  }
+
+  nextCompSpec() {
+    this.changeCompSpec += 1;
+  }
+
+  previousEntitySpec() {
+    this.changeEntitySpec -= 1;
+    this.changesSpecificPr();
+  }
+
+  nextEntitySpec() {
+    this.changeEntitySpec += 1;
+    this.changesSpecificPr();
+  }
 
   back() {
     this.router.navigateByUrl('/entities');

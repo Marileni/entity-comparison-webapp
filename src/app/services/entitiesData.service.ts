@@ -8,14 +8,14 @@ import { environment } from 'src/environments/environment';
 export class EntitiesDataService {
   constructor(private http: HttpClient) {}
 
-  getEntity(endpoint: string, entity: string) {
+  getEntity(entity: string) {
     return this.http.get(
       environment.URLDBpedia + entity,
       this.createHeader('application/json')
     );
   }
 
-  getEntityImage(endpoint: string, entity: string) {
+  getEntityImage(entity: string) {
     return this.http.get(
       environment.URLDBpedia + 'images/' + entity,
       this.createHeader('application/json')
@@ -25,6 +25,26 @@ export class EntitiesDataService {
   getEntityCommonalities(endpoint1: string, endpoint2: string) {
     return this.http.get(
       environment.URLDBpedia + 'common/entity/' + endpoint1 + '/' + endpoint2,
+      this.createHeader('application/json')
+    );
+  }
+
+  getEntityAllProperties(endpoint: string) {
+    console.log(
+      environment.URLDBpedia + 'all/properties/of/entity/' + endpoint
+    );
+    return this.http.get(
+      environment.URLDBpedia + 'all/properties/of/entity/' + endpoint,
+      this.createHeader('application/json')
+    );
+  }
+
+  getEntitySpecificProperty(endpoint: string, property: string) {
+    console.log(
+      environment.URLDBpedia + 'specific/' + property + '/' + endpoint
+    );
+    return this.http.get(
+      environment.URLDBpedia + 'specific/' + property + '/' + endpoint,
       this.createHeader('application/json')
     );
   }

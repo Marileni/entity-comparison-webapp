@@ -181,8 +181,6 @@ footer {
   padding: 5px;
 }
 
-.table-body {}
-
 .mtable {
   table-layout: fixed;
   width: 90%;
@@ -232,6 +230,7 @@ footer {
 .d-block {
   height: 600px;
   width: 20%;
+  margin: 4px;
 }
 
 .image-container {

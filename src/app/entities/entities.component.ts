@@ -9,18 +9,8 @@ import { Ientity, SharedService } from '../services/shared.service';
   styleUrls: ['./entities.component.css'],
 })
 export class EntitiesComponent implements OnInit {
-  //data!: string;
-  //appearError: boolean = false;
-  //message: string = '';
-
-  //model: string = '';
-  //add: boolean = false;
-  //add2: boolean = false;
-
   messageUrl: string = '';
   checkUrl: boolean = true;
-
-  //countValidUrls: number = 0;
 
   entities = {
     mainEntity: 'http://dbpedia.org/resource/Aristotle',
@@ -42,8 +32,6 @@ export class EntitiesComponent implements OnInit {
     private sharedService: SharedService
   ) {
     this.sharedService.clearEntitiesTransfer();
-    // this.data =
-    //   '[{"id": 1,"mainEntity": "http://dbpedia.org/resource/Aristotle","downloadData":"http://dbpedia.org/sparql","triplesOfMainEntity": [],"images":[],"entitiesForComparison": [{"entity": "http://dbpedia.org/resource/Socrates","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]},{  "entity": "http://dbpedia.org/resource/Plato","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]}]},{ "id": 2,"mainEntity": "http://dbpedia.org/resource/Heraklion","downloadData":"http://dbpedia.org/sparql","triplesOfMainEntity": [],"images":[],"entitiesForComparison": [{"entity": "http://dbpedia.org/resource/Chania","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]},{  "entity": "http://dbpedia.org/resource/Naxos","downloadData":"http://dbpedia.org/sparql","triplesOfEntity": [],"images":[]}]}]';
   }
 
   ngOnInit(): void {}
@@ -64,8 +52,6 @@ export class EntitiesComponent implements OnInit {
   }
 
   addMainEntityField() {
-    // var main_entity_input = document.getElementById('main-entity');
-    // console.log(main_entity_input?.ariaValueNow);
     var choice: boolean = confirm(
       'Do you want to add another main entity ? This pair of main entity and other entities cannot be edited afterwards. Do you want to continue?'
     );
@@ -126,7 +112,7 @@ export class EntitiesComponent implements OnInit {
   focusOutFunction() {
     var main: string = this.form.get('mainEntity')?.value;
     var other: any[] = this.form.get('otherEntity')?.value;
-    //  this.ValidURL(e.target.value);
+
     this.checkUrl = true;
     if (!this.ValidURL(main)) this.checkUrl = false;
     for (let i in other) {
@@ -142,65 +128,17 @@ export class EntitiesComponent implements OnInit {
   }
 
   ValidURL(link: any) {
-    console.log(this.messageUrl);
-
     var regex =
       /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
     if (!regex.test(link)) {
-      // this.messageUrl = 'Please enter a valid url.';
       return false;
     } else {
       var value = link.includes('http://dbpedia.org');
       if (value) {
-        // this.messageUrl = '';
         return true;
       } else {
-        // this.messageUrl = 'Please enter a valid url with "http://dbpedia.org".';
         return false;
       }
     }
   }
 }
-
-// select() {
-//   //environment.currentJSON = this.data;
-//   localStorage.setItem('input', this.data);
-//   this.router.navigateByUrl('/entities/select');
-// }
-
-// IsJsonString(str: string) {
-//   try {
-//     JSON.parse(str);
-//   } catch (e) {
-//     return false;
-//   }
-//   return true;
-// }
-
-// beautify() {
-//   if (this.IsJsonString(this.data)) {
-//     var obj = JSON.parse(this.data);
-//     var pretty = JSON.stringify(obj, undefined, 4);
-//     this.appearError = false;
-//     this.data = pretty;
-//   } else {
-//     this.appearError = true;
-//     if (this.data == '' || this.data == undefined)
-//       this.message = 'Enter a JSON format.';
-//     else
-//       this.message =
-//         'You entered a wrong JSON format. Please enter a valid one.';
-//   }
-// }
-
-// onSubmit() {
-//   this.router.navigateByUrl('/entities/select');
-// }
-
-// addOtherEntity() {
-//   this.add = true;
-// }
-
-// addmainEntity() {
-//   this.add2 = true;
-// }

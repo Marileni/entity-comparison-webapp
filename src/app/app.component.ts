@@ -12,8 +12,6 @@ export class AppComponent {
   sideNavStyles: any;
   mainStyles: any;
 
-  opened: boolean = false;
-
   constructor() {
     this.mainStyles = {
       transition: 'margin-left .5s',

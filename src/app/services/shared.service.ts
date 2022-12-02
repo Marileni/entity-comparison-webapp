@@ -13,7 +13,6 @@ export interface Ientities {
 }
 
 //For the JSON
-
 export interface IentityJSON {
   mainEntity: any;
   otherEntity: any[];
@@ -66,6 +65,14 @@ export interface ICommonalities {
   entities: ICommonData[];
 }
 
+//For specific Predicates
+export interface IPredicate {
+  predicate: string;
+}
+export interface ISpecificPred {
+  entities: IPredicate[][];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -75,7 +82,6 @@ export class SharedService {
 
   constructor() {
     this.entitiesTransfer = { entities: [] };
-
     this._entitiesTransferueBS.next(this.entitiesTransfer);
   }
 

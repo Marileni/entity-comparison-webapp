@@ -4,17 +4,6 @@
       Back
     </button>
     <div>
-      <!-- <img src="../assets/logo.jpg" class="imageFix" alt="Entities Comparison">
-  <div class="wrap">
-    <textarea [(ngModel)]=data class="form-control z-depth-1" id="exampleFormControlTextarea6" cols=20 rows=10
-      placeholder="Enter a JSON format..."></textarea>
-    <div *ngIf="appearError" id="errorMessage">
-      <p>! {{message}}</p>
-    </div>
-    <button type="button" class="btn btn-primary select" (click)="beautify()">Beautify</button>
-    |
-    <button type="button" class="btn btn-primary select" (click)="changeEntities()">Change</button>
-  </div>  -->
 
       <select #mode [disabled]="loading" class="form-select" aria-label="Default select example"
         (change)="changeMode(mode.value)">
@@ -28,7 +17,6 @@
       <div *ngIf="!loading">
         <div *ngIf="modeChange == 0">
           <div id="table-container">
-            <!-- <div class="column2 right-border" *ngFor="let ent of oneJSON; let i = index"> -->
             <div *ngFor="let ent of finalEntitiesUrl.entities; let i = index">
               <div class="column2 right-border" *ngIf="changeEntity == i">
                 <div class="tableTitle">
@@ -50,7 +38,6 @@
                           let j = index
                         ">
                         <td class="table-cell">{{ user.predicate }}</td>
-                        <!-- <div *ngIf=""></div> -->
                         <td class="table-cell" *ngIf="ValidURL(finalEntities.entities[i].mainEntity[j].object)">
                           <a href="{{ finalEntities.entities[i].mainEntity[j].object }}">{{ user.object }}</a>
                         </td>
@@ -64,8 +51,6 @@
               </div>
             </div>
 
-            <!-- <div class="name">Socrates</div> -->
-            <!-- <div class="column2 left-border" *ngFor="let ent of oneJSON; let k = index"> -->
             <div *ngFor="let ent of finalEntitiesUrl.entities; let i = index">
               <div *ngFor="
                   let ent of finalEntitiesUrl.entities[i].otherEntity;
@@ -111,13 +96,12 @@
                   </div>
                 </div>
               </div>
-              <!-- <app-entities-other></app-entities-other> -->
             </div>
           </div>
 
           <div class="buttonContainer">
             <div class="nextPrevButtons">
-              <button type="button" class="btn btn-primary select prvEnt" [disabled]="previousCompBtn"
+              <!-- <button type="button" class="btn btn-primary select prvEnt" [disabled]="previousCompBtn"
                 (click)="prvEntity()">
                 Previous Comparison
               </button>
@@ -125,18 +109,18 @@
               <button type="button" class="btn btn-primary select nextEnt" [disabled]="nextCompBtn"
                 (click)="nextEntity()">
                 Next Comparison
-              </button>
+              </button> -->
             </div>
 
             <div class="nextPrevButtons">
               <button type="button" class="btn btn-primary select prvEnt" [disabled]="previousEntBtn"
                 (click)="prvOtherEntity()">
-                Previous Entity
+                Previous
               </button>
               <div>|</div>
               <button type="button" class="btn btn-primary select nextEnt" [disabled]="nextEntBtn"
                 (click)="nextOtherEntity()">
-                Next Entity
+                Next
               </button>
             </div>
           </div>
@@ -220,7 +204,7 @@
 
           <div class="image-button-container">
             <div class="nextPrevButtons">
-              <button type="button" class="btn btn-primary select prvEnt" (click)="imagesPrvEntity()"
+              <!-- <button type="button" class="btn btn-primary select prvEnt" (click)="imagesPrvEntity()"
                 [disabled]="previousImageComp">
                 Previous Comparison
               </button>
@@ -228,18 +212,18 @@
               <button type="button" class="btn btn-primary select nextEnt" (click)="imagesNextEntity()"
                 [disabled]="nextImageComp">
                 Next Comparison
-              </button>
+              </button> -->
             </div>
 
             <div class="nextPrevButtons">
               <button type="button" class="btn btn-primary select prvEnt" (click)="imagesPrvOtherEntity()"
                 [disabled]="previousImageEntity">
-                Previous Entity
+                Previous
               </button>
               <div>|</div>
               <button type="button" class="btn btn-primary select nextEnt" (click)="imagesNextOtherEntity()"
                 [disabled]="nextImageEntity">
-                Next Entity
+                Next
               </button>
             </div>
           </div>
@@ -265,7 +249,7 @@
 
           <div class="image-button-container">
             <div class="nextPrevButtons">
-              <button type="button" class="btn btn-primary select prvEnt" (click)="wikipediaPrvComp()"
+              <!-- <button type="button" class="btn btn-primary select prvEnt" (click)="wikipediaPrvComp()"
                 [disabled]="previousWikiComp">
                 Previous Comparison
               </button>
@@ -273,18 +257,18 @@
               <button type="button" class="btn btn-primary select nextEnt" (click)="wikipediaNextComp()"
                 [disabled]="nextWikiComp">
                 Next Comparison
-              </button>
+              </button> -->
             </div>
 
             <div class="nextPrevButtons">
               <button type="button" class="btn btn-primary select prvEnt" (click)="wikipediaPrvEntity()"
                 [disabled]="previousWikiEntity">
-                Previous Entity
+                Previous
               </button>
               <div>|</div>
               <button type="button" class="btn btn-primary select nextEnt" (click)="wikipediaNextEntity()"
                 [disabled]="nextWikiEntity">
-                Next Entity
+                Next
               </button>
             </div>
           </div>
@@ -306,38 +290,39 @@
 
               <div>There are {{ commonLength.entities[i].total[changeEntityCommon] }} commons.</div>
               <br />
-
-              <div *ngFor="
+              <div id="table-container">
+                <div *ngFor="
               let user of commonEntities.entities[i].common;
               let j = index">
-                <div *ngIf="changeEntityCommon == j">
-                  <table class="mtable">
-                    <thead>
-                      <tr>
-                        <th>Predicate</th>
-                        <th>Object</th>
-                      </tr>
-                    </thead>
-                    <tbody class="table-body">
-                      <tr *ngFor="
+                  <div *ngIf="changeEntityCommon == j">
+                    <table class="mtable">
+                      <thead>
+                        <tr>
+                          <th>Predicate</th>
+                          <th>Object</th>
+                        </tr>
+                      </thead>
+                      <tbody class="table-body">
+                        <tr *ngFor="
                         let user of commonEntities.entities[i].common[j];
                         let k = index
                       ">
-                        <td class="table-cell">
-                          {{ commonEntitiesUrl.entities[i].common[j][k].predicate }}
-                        </td>
-                        <td class="table-cell" *ngIf="ValidURL(commonEntities.entities[i].common[j][k].object)">
-                          <a href="{{ commonEntities.entities[i].common[j][k].object }}">{{
-                            commonEntitiesUrl.entities[i].common[j][k].object
-                            }}</a>
-                        </td>
+                          <td class="table-cell">
+                            {{ commonEntitiesUrl.entities[i].common[j][k].predicate }}
+                          </td>
+                          <td class="table-cell" *ngIf="ValidURL(commonEntities.entities[i].common[j][k].object)">
+                            <a href="{{ commonEntities.entities[i].common[j][k].object }}">{{
+                              commonEntitiesUrl.entities[i].common[j][k].object
+                              }}</a>
+                          </td>
 
-                        <td class="table-cell" *ngIf="!ValidURL(commonEntities.entities[i].common[j][k].object)">
-                          {{ commonEntitiesUrl.entities[i].common[j][k].object }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                          <td class="table-cell" *ngIf="!ValidURL(commonEntities.entities[i].common[j][k].object)">
+                            {{ commonEntitiesUrl.entities[i].common[j][k].object }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -345,7 +330,7 @@
 
           <div class="image-button-container">
             <div class="nextPrevButtons">
-              <button type="button" class="btn btn-primary select prvEnt" (click)="commonPrvComp()"
+              <!-- <button type="button" class="btn btn-primary select prvEnt" (click)="commonPrvComp()"
                 [disabled]="previousCommonComp">
                 Previous Comparison
               </button>
@@ -353,136 +338,185 @@
               <button type="button" class="btn btn-primary select nextEnt" (click)="commonNextComp()"
                 [disabled]="nextCommonComp">
                 Next Comparison
-              </button>
+              </button> -->
             </div>
 
             <div class="nextPrevButtons">
               <button type="button" class="btn btn-primary select prvEnt" (click)="commonPrvEntity()"
                 [disabled]="previousCommonEntity">
-                Previous Entity
+                Previous
               </button>
               <div>|</div>
               <button type="button" class="btn btn-primary select nextEnt" (click)="commonNextEntity()"
                 [disabled]="nextCommonEntity">
-                Next Entity
+                Next
               </button>
             </div>
           </div>
         </div>
 
         <div *ngIf="modeChange == 4">
-
+          <hr>
           <div class="textMess"> The default predicate is '22-rdf-syntax-ns#type'.
-            <br>
-            If you would like to select another, select from the selection box below.
+
+            If you would like to select another predicate, please select from the selection box below.
           </div>
-          <select #mode [disabled]="loading" class="form-select" aria-label="Default select example">
-            <option selected value="0">22-rdf-syntax-ns#type</option>
-            <option value="1">rdf-schema#comment</option>
-            <option value="2">subject</option>
-            <option value="3">depiction</option>
-            <option value="4">wikiPageWikiLink</option>
-          </select>
-          <div *ngFor="
-              let user of commonEntities.entities[0].common;
-              let j = index">
-            <div *ngIf="changeEntityCommon == j">
-              <table class="mtable">
-                <thead>
-                  <tr>
-                    <th>Predicate</th>
-                    <th>Object</th>
-                  </tr>
-                </thead>
-                <tbody class="table-body">
-                  <tr *ngFor="
-                        let user of commonEntities.entities[0].common[j];
-                        let k = index
-                      ">
-                    <td class="table-cell">
-                      {{ commonEntitiesUrl.entities[0].common[j][k].predicate }}
-                    </td>
-                    <td class="table-cell" *ngIf="ValidURL(commonEntities.entities[0].common[j][k].object)">
-                      <a href="{{ commonEntities.entities[0].common[j][k].object }}">{{
-                        commonEntitiesUrl.entities[0].common[j][k].object
+
+          <div *ngFor="let ent of specificPred.entities; let i = index">
+            <div *ngIf="i == specificComp">
+              <select style="width: 20%" #mode [disabled]="loadingChange" class="form-select"
+                aria-label="Default select example" (change)="changePredicate(mode.value)">
+                <option *ngFor="let entity of specificPred.entities[i]; let j = index">
+                  {{specificPred.entities[i][j].predicate}}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div *ngIf="!loadingChange">
+            <div id="table-container">
+              <div *ngFor="let ent of finalEntitiesUrl.entities; let i = index">
+                <div class="column2 right-border" *ngIf="changeCompSpec == i">
+                  <div class="tableTitle">
+                    <span class="titleBold">Entity:</span>
+                    <a href="{{ allEntities.entities[i].mainEntity }}">
+                      {{ allEntities.entities[i].mainEntity }}</a>
+                  </div>
+                  <div>
+                    <table class="mtable">
+                      <thead>
+                        <tr>
+                          <th>Predicate</th>
+                          <th>Object</th>
+                        </tr>
+                      </thead>
+                      <tbody class="table-body">
+                        <tr *ngFor="
+                          let user of specificPrFinal.entities[i].mainEntity;
+                          let j = index
+                        ">
+                          <td class="table-cell">{{ user.predicate }}</td>
+                          <td class="table-cell" *ngIf="ValidURL(specificPrFinalUrl.entities[i].mainEntity[j].object)">
+                            <a href="{{ specificPrFinalUrl.entities[i].mainEntity[j].object }}">{{ user.object }}</a>
+                          </td>
+                          <td class="table-cell" *ngIf="!ValidURL(specificPrFinalUrl.entities[i].mainEntity[j].object)">
+                            {{ user.object }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngFor="let ent of finalEntitiesUrl.entities; let i = index">
+                <div *ngFor="
+                  let ent of finalEntitiesUrl.entities[i].otherEntity;
+                  let k = index
+                ">
+                  <div class="column2 left-border" *ngIf="changeEntitySpec == k">
+                    <div class="tableTitle">
+                      <span class="titleBold">Entity:</span>
+                      <a href="{{
+                        allEntities.entities[i].otherEntity[k].otherEntities
+                      }}">
+                        {{
+                        allEntities.entities[i].otherEntity[k].otherEntities
                         }}</a>
-                    </td>
+                    </div>
+                    <div>
+                      <table class="mtable">
+                        <thead>
+                          <tr>
+                            <th>Predicate</th>
+                            <th>Object</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="
+                            let user of specificPrFinal.entities[i]
+                              .otherEntity[k];
+                            let l = index
+                          ">
+                            <td class="table-cell">{{ user.predicate }}</td>
+                            <td class="table-cell"
+                              *ngIf="ValidURL(specificPrFinalUrl.entities[i].otherEntity[k][l].object)">
+                              <a href="{{
+                              specificPrFinalUrl.entities[i].otherEntity[k][l].object
+                              }}">{{ user.object }}</a>
+                            </td>
 
-                    <td class="table-cell" *ngIf="!ValidURL(commonEntities.entities[0].common[j][k].object)">
-                      {{ commonEntitiesUrl.entities[0].common[j][k].object }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                            <td class="table-cell"
+                              *ngIf="!ValidURL(specificPrFinalUrl.entities[i].otherEntity[k][l].object)">
+                              {{ user.object }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div class="image-button-container">
-            <div class="nextPrevButtons">
-              <button type="button" class="btn btn-primary select prvEnt" (click)="wikipediaPrvComp()"
-                [disabled]="previousWikiComp">
-                Previous Comparison
-              </button>
-              <div>|</div>
-              <button type="button" class="btn btn-primary select nextEnt" (click)="wikipediaNextComp()"
-                [disabled]="nextWikiComp">
-                Next Comparison
-              </button>
-            </div>
+            <div class="buttonContainer">
+              <div class="nextPrevButtons">
+                <!-- <button type="button" class="btn btn-primary select prvEnt" [disabled]="previousSpecComp"
+                  (click)="previousCompSpec()">
+                  Previous Comparison
+                </button>
+                <div>|</div>
+                <button type="button" class="btn btn-primary select nextEnt" [disabled]="nextSpecComp"
+                  (click)="nextCompSpec()">
+                  Next Comparison
+                </button> -->
+              </div>
 
-            <div class="nextPrevButtons">
-              <button type="button" class="btn btn-primary select prvEnt" (click)="wikipediaPrvEntity()"
-                [disabled]="previousWikiEntity">
-                Previous Entity
-              </button>
-              <div>|</div>
-              <button type="button" class="btn btn-primary select nextEnt" (click)="wikipediaNextEntity()"
-                [disabled]="nextWikiEntity">
-                Next Entity
-              </button>
+              <div class="nextPrevButtons">
+                <button type="button" class="btn btn-primary select prvEnt" [disabled]="previousSpecEntity"
+                  (click)="previousEntitySpec()">
+                  Previous
+                </button>
+                <div>|</div>
+                <button type="button" class="btn btn-primary select nextEnt" [disabled]="nextSpecEntity"
+                  (click)="nextEntitySpec()">
+                  Next
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div id="load">
-      <div *ngIf="loading">
-        <div class="lds-ring">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
+      <div id="load">
+        <div *ngIf="loading">
+          <div class="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <footer class="text-center text">
-      <hr />
-      Copyright © 2022 Entities Comparison Inc.
-      <br />
-      All trademarks or registered trademarks are property of their respective
-      owners.
-    </footer>
-
-    <!-- <div class="row1">
-    <div class="column2">
-      <code [innerHTML]="text"></code>
+      <div id="load">
+        <div *ngIf="loadingChange">
+          <div class="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
       </div>
-      <div class="column2">
-      <code [innerHTML]="text"></code>
+
+      <footer class="text-center text">
+        <hr />
+        Copyright © 2022 Entities Comparison Inc.
+        <br />
+        All trademarks or registered trademarks are property of their respective
+        owners.
+      </footer>
 
     </div>
-    </div> -->
-
-    <!-- <div style="position:absolute; left:100px; right:100px;">
-    <div style="position:relative;">
-      <img src="../assets/logo.jpg" style="position:absolute;">
-      <div style="position: absolute; left:210px; right:0px; top:0px;">
-        <textarea class="form-control z-depth-1" id="exampleFormControlTextarea6" style="width:100%; height:100px; display:block;
-            padding:0;"> </textarea>
-      </div>
-    </div>
-  </div> -->
   </div>
-</div>

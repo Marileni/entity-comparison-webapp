@@ -10,7 +10,7 @@
       <legend>Entities:</legend>
       <div class="legend-section">
         <button class="btn btn-primary" type="button" (click)="reset()">Clear Current Fields</button>
-        <button class="btn btn-primary" type="button" (click)="clearAll()">Delete All</button>
+        <!-- <button class="btn btn-primary" type="button" (click)="clearAll()">Delete All</button> -->
       </div>
 
       <label for="main-entity">Main Entity: </label>
@@ -43,10 +43,10 @@
       <div class="messUrl"> {{messageUrl}}</div>
       <br>
 
-      <button class="btn btn-primary" type="button" [disabled]="!checkUrl" data-bs-toggle="modal"
+      <!-- <button class="btn btn-primary" type="button" [disabled]="!checkUrl" data-bs-toggle="modal"
         data-bs-target="#staticBackdrop" (click)="addMainEntityField()">
         Add Another Comparison
-      </button>
+      </button> -->
     </fieldset>
     <br />
     <div class="continue-btn">
@@ -54,80 +54,6 @@
     </div>
   </form>
 
-
-
-
-
-
-
-
-
-  <!-- <div class="form-group shadow-textarea"> -->
-  <!-- <label for="exampleFormControlTextarea6">Shadow and placeholder</label> -->
-
-  <!-- <div id="textJson">
-      <textarea [(ngModel)]=data class="form-control z-depth-1" id="exampleFormControlTextarea6" cols=50 rows=10
-        placeholder="Enter a JSON format..."></textarea>
-      <div *ngIf="appearError" id="errorMessage">
-        <p>! {{message}}</p>
-      </div>
-    </div>
-    <br>
-    <button type="button" class="btn btn-primary beautify" (click)="beautify()">Beautify</button>
-    | *****************************************************************************************************-->
-
-  <!-- <form (ngSubmit)="onSubmit()" #f="ngForm">
-      <div class="form-group">
-        <label for="name">Main Entity</label>
-        <input type="text" class="form-control" id="name" required [(ngModel)]="model" name="name" #name="ngModel">
-        <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
-          Name is required
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="name">Other Entity</label>
-        <input type="text" class="form-control" id="name" required name="name">
-        <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
-          Name is required
-        </div>
-      </div>
-
-      <div *ngIf="add">
-        <div class="form-group">
-          <label for="name">Other Entity</label>
-          <input type="text" class="form-control" id="name" required name="name">
-          <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
-            Name is required
-          </div>
-        </div>
-      </div>
-
-      <div *ngIf="add2">
-        <div class="form-group">
-          <label for="name">Main Entity</label>
-          <input type="text" class="form-control" id="name" required [(ngModel)]="model" name="name" #name="ngModel">
-          <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
-            Name is required
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="name">Other Entity</label>
-          <input type="text" class="form-control" id="name" required name="name">
-          <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
-            Name is required
-          </div>
-        </div>
-
-      </div>
-    </form> -->
-
-  <!-- <br>
-    <button type="button" class="btn btn-primary select" (click)="addmainEntity()">Add Main Entity</button> |
-    <button type="button" class="btn btn-primary select" (click)="addOtherEntity()">Add Other Entity</button> <br>
-    <button type="button" class="btn btn-primary select" (click)="select()">Select</button> -->
-  <!-- </div> -->
 </div>
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel" aria-hidden="true">
