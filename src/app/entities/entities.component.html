@@ -3,7 +3,7 @@
     <img src="../assets/logo.jpg" class="rounded" alt="Entities Comparison">
   </div>
 </div>
-<div class="hero-section">
+<div class="hero-section" *ngIf="!loading">
 
   <form class="form-field" [formGroup]="form" (submit)="submit(form.value)">
     <fieldset>
@@ -12,6 +12,7 @@
         <button class="btn btn-primary" type="button" (click)="reset()">Clear Current Fields</button>
         <!-- <button class="btn btn-primary" type="button" (click)="clearAll()">Delete All</button> -->
       </div>
+
 
       <label for="main-entity">Main Entity: </label>
       <input type="text" id="main-entity" name="main-entity" (focusout)="focusOutFunction()"
@@ -74,6 +75,17 @@
   </div>
 </div>
 
+
+<div id="load">
+  <div *ngIf="loading">
+    <div class="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+</div>
 
 <footer class="text-center text">
   <hr />

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Ientity, SharedService } from '../services/shared.service';
+import { EntitiesDataService } from '../services/entitiesData.service';
+import { Ientities, Ientity, SharedService } from '../services/shared.service';
 
 @Component({
   selector: 'app-entities',
@@ -11,6 +12,10 @@ import { Ientity, SharedService } from '../services/shared.service';
 export class EntitiesComponent implements OnInit {
   messageUrl: string = '';
   checkUrl: boolean = true;
+
+  allEntitiesFixedUrl: Ientities = { entities: [] };
+
+  loading: boolean = false;
 
   entities = {
     mainEntity: 'http://dbpedia.org/resource/Aristotle',
@@ -29,7 +34,8 @@ export class EntitiesComponent implements OnInit {
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private entitiesService: EntitiesDataService
   ) {
     this.sharedService.clearEntitiesTransfer();
   }
@@ -87,14 +93,75 @@ export class EntitiesComponent implements OnInit {
     this.focusOutFunction();
   }
 
-  submit(value: any): void {
-    this.sharedService.updateEntitiesTransfer(value);
-    localStorage.setItem(
-      'data',
-      JSON.stringify(this.sharedService.entitiesTransfer)
-    );
+  async fixUrl(value: any) {
+    this.allEntitiesFixedUrl.entities = [];
+    for (let i = 0; i < 1; i++) {
+      this.allEntitiesFixedUrl.entities[i] = {
+        mainEntity: '',
+        otherEntity: [],
+      };
+      this.allEntitiesFixedUrl.entities[i].mainEntity =
+        value.mainEntity.replace(/[/]/gi, '%2F');
+      this.allEntitiesFixedUrl.entities[i].mainEntity =
+        this.allEntitiesFixedUrl.entities[i].mainEntity.replace(/[#]/gi, '%23');
 
-    this.router.navigateByUrl('/entities/select');
+      var result: any = await this.entitiesService
+        .getEntity(this.allEntitiesFixedUrl.entities[i].mainEntity)
+        .toPromise();
+
+      if (result == 'Error') {
+        this.loading = false;
+        this.checkUrl = false;
+        this.messageUrl =
+          'The url "' + value.mainEntity + '" is not a valid Dbpedia url.';
+        return;
+      } else {
+        this.checkUrl = true;
+      }
+      for (let j = 0; j < value.otherEntity.length; j++) {
+        this.allEntitiesFixedUrl.entities[i].otherEntity[j] = value.otherEntity[
+          j
+        ].otherEntities.replace(/[/]/gi, '%2F');
+
+        this.allEntitiesFixedUrl.entities[i].otherEntity[j] =
+          this.allEntitiesFixedUrl.entities[i].otherEntity[j].replace(
+            /[#]/gi,
+            '%23'
+          );
+
+        var result: any = await this.entitiesService
+          .getEntity(this.allEntitiesFixedUrl.entities[i].otherEntity[j])
+          .toPromise();
+
+        if (result == 'Error') {
+          this.loading = false;
+          this.checkUrl = false;
+          this.messageUrl =
+            'The url "' +
+            value.otherEntity[j].otherEntities +
+            '" is not a valid Dbpedia url.';
+          return;
+        } else {
+          this.checkUrl = true;
+        }
+      }
+    }
+  }
+
+  async submit(value: any) {
+    this.loading = true;
+    await this.fixUrl(value);
+
+    this.loading = false;
+    if (this.checkUrl) {
+      this.sharedService.updateEntitiesTransfer(value);
+      localStorage.setItem(
+        'data',
+        JSON.stringify(this.sharedService.entitiesTransfer)
+      );
+
+      this.router.navigateByUrl('/entities/select');
+    }
   }
 
   reset(): void {
@@ -121,7 +188,7 @@ export class EntitiesComponent implements OnInit {
       }
     }
     if (!this.checkUrl) {
-      this.messageUrl = 'Please enter a valid url with "http://dbpedia.org".';
+      this.messageUrl = 'Please enter a valid url from Dbpedia';
     } else {
       this.messageUrl = '';
     }

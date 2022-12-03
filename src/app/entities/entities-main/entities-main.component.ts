@@ -247,14 +247,25 @@ export class EntitiesMainComponent implements OnInit {
           object: '',
         };
 
+        //Split with /
         var words =
           this.finalEntities.entities[i].mainEntity[k].predicate.split('/');
         this.finalEntitiesUrl.entities[i].mainEntity[k].predicate =
           words[words.length - 1];
 
-        words = this.finalEntities.entities[i].mainEntity[k].object.split('/');
-        this.finalEntitiesUrl.entities[i].mainEntity[k].object =
-          words[words.length - 1];
+        //Split with ^^
+        if (
+          this.finalEntities.entities[i].mainEntity[k].object.includes('^^')
+        ) {
+          words =
+            this.finalEntities.entities[i].mainEntity[k].object.split('^^');
+          this.finalEntitiesUrl.entities[i].mainEntity[k].object = words[0];
+        } else {
+          words =
+            this.finalEntities.entities[i].mainEntity[k].object.split('/');
+          this.finalEntitiesUrl.entities[i].mainEntity[k].object =
+            words[words.length - 1];
+        }
       }
 
       for (
@@ -281,10 +292,26 @@ export class EntitiesMainComponent implements OnInit {
           this.finalEntitiesUrl.entities[i].otherEntity[j][k].predicate =
             words[words.length - 1];
 
-          words =
-            this.finalEntities.entities[i].otherEntity[j][k].object.split('/');
-          this.finalEntitiesUrl.entities[i].otherEntity[j][k].object =
-            words[words.length - 1];
+          //Split with ^^
+          if (
+            this.finalEntities.entities[i].otherEntity[j][k].object.includes(
+              '^^'
+            )
+          ) {
+            words =
+              this.finalEntities.entities[i].otherEntity[j][k].object.split(
+                '^^'
+              );
+            this.finalEntitiesUrl.entities[i].otherEntity[j][k].object =
+              words[0];
+          } else {
+            words =
+              this.finalEntities.entities[i].otherEntity[j][k].object.split(
+                '/'
+              );
+            this.finalEntitiesUrl.entities[i].otherEntity[j][k].object =
+              words[words.length - 1];
+          }
         }
       }
     }
@@ -313,6 +340,9 @@ export class EntitiesMainComponent implements OnInit {
     if (!regex.test(link)) {
       return false;
     } else {
+      if (link.includes('^^')) {
+        return false;
+      }
       return true;
     }
   }
@@ -643,11 +673,20 @@ export class EntitiesMainComponent implements OnInit {
           this.commonEntitiesUrl.entities[i].common[j][k].predicate =
             words[words.length - 1];
 
-          words =
-            this.commonEntities.entities[i].common[j][k].object.split('/');
+          //Split with ^^
+          if (
+            this.commonEntities.entities[i].common[j][k].object.includes('^^')
+          ) {
+            words =
+              this.commonEntities.entities[i].common[j][k].object.split('^^');
+            this.commonEntitiesUrl.entities[i].common[j][k].object = words[0];
+          } else {
+            words =
+              this.commonEntities.entities[i].common[j][k].object.split('/');
 
-          this.commonEntitiesUrl.entities[i].common[j][k].object =
-            words[words.length - 1];
+            this.commonEntitiesUrl.entities[i].common[j][k].object =
+              words[words.length - 1];
+          }
         }
       }
     }
@@ -827,10 +866,23 @@ export class EntitiesMainComponent implements OnInit {
         this.specificPrFinal.entities[i].mainEntity[k].predicate =
           words[words.length - 1];
 
-        words =
-          this.specificPrFinalUrl.entities[i].mainEntity[k].object.split('/');
-        this.specificPrFinal.entities[i].mainEntity[k].object =
-          words[words.length - 1];
+        //Split with ^^
+        if (
+          this.specificPrFinalUrl.entities[i].mainEntity[k].object.includes(
+            '^^'
+          )
+        ) {
+          words =
+            this.specificPrFinalUrl.entities[i].mainEntity[k].object.split(
+              '^^'
+            );
+          this.specificPrFinal.entities[i].mainEntity[k].object = words[0];
+        } else {
+          words =
+            this.specificPrFinalUrl.entities[i].mainEntity[k].object.split('/');
+          this.specificPrFinal.entities[i].mainEntity[k].object =
+            words[words.length - 1];
+        }
       }
 
       for (
@@ -857,12 +909,26 @@ export class EntitiesMainComponent implements OnInit {
           this.specificPrFinal.entities[i].otherEntity[j][k].predicate =
             words[words.length - 1];
 
-          words =
-            this.specificPrFinalUrl.entities[i].otherEntity[j][k].object.split(
-              '/'
-            );
-          this.specificPrFinal.entities[i].otherEntity[j][k].object =
-            words[words.length - 1];
+          //Split with ^^
+          if (
+            this.specificPrFinalUrl.entities[i].otherEntity[j][
+              k
+            ].object.includes('^^')
+          ) {
+            words =
+              this.specificPrFinalUrl.entities[i].otherEntity[j][
+                k
+              ].object.split('^^');
+            this.specificPrFinal.entities[i].otherEntity[j][k].object =
+              words[0];
+          } else {
+            words =
+              this.specificPrFinalUrl.entities[i].otherEntity[j][
+                k
+              ].object.split('/');
+            this.specificPrFinal.entities[i].otherEntity[j][k].object =
+              words[words.length - 1];
+          }
         }
       }
     }

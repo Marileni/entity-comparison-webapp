@@ -30,9 +30,6 @@ export class EntitiesDataService {
   }
 
   getEntityAllProperties(endpoint: string) {
-    console.log(
-      environment.URLDBpedia + 'all/properties/of/entity/' + endpoint
-    );
     return this.http.get(
       environment.URLDBpedia + 'all/properties/of/entity/' + endpoint,
       this.createHeader('application/json')
@@ -40,9 +37,6 @@ export class EntitiesDataService {
   }
 
   getEntitySpecificProperty(endpoint: string, property: string) {
-    console.log(
-      environment.URLDBpedia + 'specific/' + property + '/' + endpoint
-    );
     return this.http.get(
       environment.URLDBpedia + 'specific/' + property + '/' + endpoint,
       this.createHeader('application/json')
