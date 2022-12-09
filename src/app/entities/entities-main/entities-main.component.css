@@ -234,6 +234,7 @@ footer {
 }
 
 .image-container {
+  z-index: inherit;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

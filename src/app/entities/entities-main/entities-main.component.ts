@@ -266,6 +266,11 @@ export class EntitiesMainComponent implements OnInit {
             this.finalEntities.entities[i].mainEntity[k].object.split('/');
           this.finalEntitiesUrl.entities[i].mainEntity[k].object =
             words[words.length - 1];
+
+          if (this.finalEntitiesUrl.entities[i].mainEntity[k].object == '') {
+            this.finalEntitiesUrl.entities[i].mainEntity[k].object =
+              words[words.length - 2];
+          }
         }
       }
 
@@ -312,6 +317,13 @@ export class EntitiesMainComponent implements OnInit {
               );
             this.finalEntitiesUrl.entities[i].otherEntity[j][k].object =
               words[words.length - 1];
+
+            if (
+              this.finalEntitiesUrl.entities[i].otherEntity[j][k].object == ''
+            ) {
+              this.finalEntitiesUrl.entities[i].otherEntity[j][k].object =
+                words[words.length - 2];
+            }
           }
         }
       }
@@ -687,6 +699,11 @@ export class EntitiesMainComponent implements OnInit {
 
             this.commonEntitiesUrl.entities[i].common[j][k].object =
               words[words.length - 1];
+
+            if (this.commonEntitiesUrl.entities[i].common[j][k].object == '') {
+              this.commonEntitiesUrl.entities[i].common[j][k].object =
+                words[words.length - 2];
+            }
           }
         }
       }
@@ -733,8 +750,6 @@ export class EntitiesMainComponent implements OnInit {
 
   async getSpecificPredicate() {
     this.loading = true;
-    console.log(this.modeChange);
-    console.log(this.allEntitiesFixedUrl);
     //Get JSON data
     for (let i = 0; i < this.allEntitiesFixedUrl.entities.length; i++) {
       this.specificPredJson.entities[i] = '';
@@ -760,15 +775,12 @@ export class EntitiesMainComponent implements OnInit {
         this.specificPred.entities[i][j].predicate = words[words.length - 1];
       }
     }
-    console.log(this.finalEntitiesUrl);
     this.getEntitiesSpecificPre('22-rdf-syntax-ns#type');
 
     this.loading = false;
   }
 
   getEntitiesSpecificPre(predicate: string) {
-    console.log(this.specificPredUrl);
-
     var predicateUrl: string = '';
     for (let i = 0; i < this.specificPredUrl.entities.length; i++) {
       for (let j = 0; j < this.specificPredUrl.entities[i].length; j++) {
@@ -887,6 +899,11 @@ export class EntitiesMainComponent implements OnInit {
             this.specificPrFinalUrl.entities[i].mainEntity[k].object.split('/');
           this.specificPrFinal.entities[i].mainEntity[k].object =
             words[words.length - 1];
+
+          if (this.specificPrFinal.entities[i].mainEntity[k].object == '') {
+            this.specificPrFinal.entities[i].mainEntity[k].object =
+              words[words.length - 2];
+          }
         }
       }
 
@@ -933,12 +950,17 @@ export class EntitiesMainComponent implements OnInit {
               ].object.split('/');
             this.specificPrFinal.entities[i].otherEntity[j][k].object =
               words[words.length - 1];
+
+            if (
+              this.specificPrFinal.entities[i].otherEntity[j][k].object == ''
+            ) {
+              this.specificPrFinal.entities[i].otherEntity[j][k].object =
+                words[words.length - 2];
+            }
           }
         }
       }
     }
-
-    console.log(this.specificPrFinal);
 
     this.changesSpecificPr();
     this.loadingChange = false;
