@@ -7,11 +7,12 @@
 
       <select #mode [disabled]="loading" class="form-select" aria-label="Default select example"
         (change)="changeMode(mode.value)">
-        <option selected value="0">Tables</option>
-        <option value="1">Images</option>
-        <option value="2">Wikipedia</option>
-        <option value="3">Commonalities</option>
+        <option selected value="2">Wikipedia</option>
+        <option value="0">All triples</option>
         <option value="4">Specific predicates</option>
+        <option value="1">Images</option>
+        <option value="3">Commonalities</option>
+
       </select>
 
       <div *ngIf="!loading">
@@ -23,6 +24,10 @@
                   <span class="titleBold">Entity:</span>
                   <a href="{{ allEntities.entities[i].mainEntity }}">
                     {{ allEntities.entities[i].mainEntity }}</a>
+                  <br>
+                  <div class="triplesMess">
+                    Triples: <b>{{finalEntitiesUrl.entities[i].mainEntity.length}}</b>
+                  </div>
                 </div>
                 <div>
                   <table class="mtable">
@@ -65,6 +70,9 @@
                       {{
                       allEntities.entities[i].otherEntity[k].otherEntities
                       }}</a>
+                    <div class="triplesMess">
+                      Triples: <b>{{finalEntitiesUrl.entities[i].otherEntity[k].length}}</b>
+                    </div>
                   </div>
                   <div>
                     <table class="mtable">
@@ -230,7 +238,6 @@
         </div>
 
         <div *ngIf="modeChange == 2">
-
           <div *ngFor="let ent of entitiesWithUrl.entities; let i = index"
             [ngStyle]="{'display': changeCompWiki == i ? 'block' : 'none'}">
             <div *ngIf="changeCompWiki == i" style="display: flex;">
@@ -288,7 +295,9 @@
                   {{ allEntities.entities[i].otherEntity[changeEntityCommon].otherEntities }}</a>
               </div>
 
-              <div>There are {{ commonLength.entities[i].total[changeEntityCommon] }} commons.</div>
+              <div class="message">There are <b>{{ commonLength.entities[i].total[changeEntityCommon] }}</b> common
+                triples.
+              </div>
               <br />
               <div id="table-container">
                 <div *ngFor="
@@ -512,10 +521,9 @@
 
       <footer class="text-center text">
         <hr />
-        Copyright © 2022 Entities Comparison Inc.
-        <br />
-        All trademarks or registered trademarks are property of their respective
-        owners.
+        Copyright © 2022
+        <br>
+        <br>
       </footer>
 
     </div>

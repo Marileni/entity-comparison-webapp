@@ -20,7 +20,7 @@
       <ng-container formArrayName="otherEntity" *ngFor="let entity of otherEntity.controls; index as i">
         <ng-container [formGroupName]="i">
           <div class="right-side">
-            <label class="otherEntityLabel" for="OtherEntity">Other Entity:</label>
+            <label class="otherEntityLabel" for="OtherEntity">vs Entity:</label>
             <input id="OtherEntity" name="OtherEntity" (focusout)="focusOutFunction()"
               placeholder="http://dbpedia.org/resource/Socrates" formControlName="otherEntities" />
 
@@ -36,7 +36,7 @@
 
       <div class="right-button">
         <button class="btn btn-primary" type="button" (click)="addEntityField()">
-          Add
+          Add Entity
         </button>
       </div>
       <br /><br />
@@ -51,7 +51,7 @@
     </fieldset>
     <br />
     <div class="continue-btn">
-      <button class="btn btn-primary" type="submit" [disabled]="!checkUrl">Continue</button>
+      <button class="btn btn-primary" type="submit" [disabled]="!checkUrl">Start</button>
     </div>
   </form>
 
@@ -89,8 +89,7 @@
 
 <footer class="text-center text">
   <hr />
-  Copyright © 2022 Entities Comparison Inc.
-  <br />
-  All trademarks or registered trademarks are property of their respective
-  owners.
+  Copyright © 2022
+  <br>
+  <br>
 </footer>

@@ -5,7 +5,7 @@ import { EntitiesComponent } from './entities/entities.component';
 import { InstructionsComponent } from './instructions/instructions.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/instructions', pathMatch: 'full' },
+  { path: '', redirectTo: '/entities', pathMatch: 'full' },
   {
     path: 'instructions',
     component: InstructionsComponent,

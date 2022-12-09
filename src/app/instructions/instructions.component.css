@@ -29,7 +29,7 @@ footer {
   bottom: 0px;
 }
 
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 834px) {
   footer {
     width: 100%;
     position: inherit;

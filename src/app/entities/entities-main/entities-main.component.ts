@@ -26,7 +26,7 @@ interface totalCommon {
 })
 export class EntitiesMainComponent implements OnInit {
   loading: boolean = false;
-  modeChange: number = 0;
+  modeChange: number = 2;
 
   //tables
   allEntities: any;
@@ -130,7 +130,7 @@ export class EntitiesMainComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.fixUrl();
-    await this.fixEntitiesTable();
+    this.fixWikipedia();
   }
 
   async changeMode(value: string) {
@@ -142,12 +142,13 @@ export class EntitiesMainComponent implements OnInit {
       this.fixWikipedia();
     } else if (value == '0') {
       this.modeChange = 0;
-      await this.fixEntitiesTable();
+      this.fixEntitiesTable();
     } else if (value == '3') {
       this.modeChange = 3;
       this.getCommonalities();
     } else {
       this.modeChange = 4;
+      await this.fixEntitiesTable();
       this.getSpecificPredicate();
     }
   }
@@ -732,7 +733,8 @@ export class EntitiesMainComponent implements OnInit {
 
   async getSpecificPredicate() {
     this.loading = true;
-
+    console.log(this.modeChange);
+    console.log(this.allEntitiesFixedUrl);
     //Get JSON data
     for (let i = 0; i < this.allEntitiesFixedUrl.entities.length; i++) {
       this.specificPredJson.entities[i] = '';
@@ -758,12 +760,15 @@ export class EntitiesMainComponent implements OnInit {
         this.specificPred.entities[i][j].predicate = words[words.length - 1];
       }
     }
+    console.log(this.finalEntitiesUrl);
     this.getEntitiesSpecificPre('22-rdf-syntax-ns#type');
 
     this.loading = false;
   }
 
   getEntitiesSpecificPre(predicate: string) {
+    console.log(this.specificPredUrl);
+
     var predicateUrl: string = '';
     for (let i = 0; i < this.specificPredUrl.entities.length; i++) {
       for (let j = 0; j < this.specificPredUrl.entities[i].length; j++) {
@@ -932,6 +937,8 @@ export class EntitiesMainComponent implements OnInit {
         }
       }
     }
+
+    console.log(this.specificPrFinal);
 
     this.changesSpecificPr();
     this.loadingChange = false;

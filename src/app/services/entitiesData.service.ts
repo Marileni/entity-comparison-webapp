@@ -37,6 +37,9 @@ export class EntitiesDataService {
   }
 
   getEntitySpecificProperty(endpoint: string, property: string) {
+    console.log(
+      environment.URLDBpedia + 'specific/' + property + '/' + endpoint
+    );
     return this.http.get(
       environment.URLDBpedia + 'specific/' + property + '/' + endpoint,
       this.createHeader('application/json')

@@ -61,18 +61,17 @@ img {
 
 footer {
   width: 100%;
-  position: inherit;
+  position: fixed;
   bottom: 0px;
 }
 
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 1400px) {
   footer {
     width: 100%;
     position: inherit;
     bottom: 0px;
   }
 }
-
 
 #main-entity {
   width: 100%;
