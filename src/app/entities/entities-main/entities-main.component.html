@@ -390,6 +390,9 @@
                     <span class="titleBold">Entity:</span>
                     <a href="{{ allEntities.entities[i].mainEntity }}">
                       {{ allEntities.entities[i].mainEntity }}</a>
+                    <div class="triplesMess">
+                      Triples: <b>{{specificPrFinal.entities[i].mainEntity.length}}</b>
+                    </div>
                   </div>
                   <div>
                     <table class="mtable">
@@ -432,6 +435,9 @@
                         {{
                         allEntities.entities[i].otherEntity[k].otherEntities
                         }}</a>
+                      <div class="triplesMess">
+                        Triples: <b>{{specificPrFinal.entities[i].otherEntity[k].length}}</b>
+                      </div>
                     </div>
                     <div>
                       <table class="mtable">
