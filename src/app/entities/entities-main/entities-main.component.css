@@ -105,10 +105,19 @@ textarea {
   }
 }
 
+
 footer {
   width: 100%;
-  position: inherit;
+  position: fixed;
   bottom: 0px;
+}
+
+@media screen and (max-height: 750px) {
+  footer {
+    width: 100%;
+    position: inherit;
+    bottom: 0px;
+  }
 }
 
 /* .dropdown {
