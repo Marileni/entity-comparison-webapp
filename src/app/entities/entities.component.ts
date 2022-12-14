@@ -4,6 +4,13 @@ import { Router } from '@angular/router';
 import { EntitiesDataService } from '../services/entitiesData.service';
 import { Ientities, Ientity, SharedService } from '../services/shared.service';
 
+export interface OtherEntities {
+  otherEntities: string;
+}
+export interface FinalValue {
+  mainEntity: string;
+  otherEntity: OtherEntities[];
+}
 @Component({
   selector: 'app-entities',
   templateUrl: './entities.component.html',
@@ -150,7 +157,23 @@ export class EntitiesComponent implements OnInit {
 
   async submit(value: any) {
     this.loading = true;
-    await this.fixUrl(value);
+
+    var finalValue: FinalValue = {
+      mainEntity: '',
+      otherEntity: [],
+    };
+
+    finalValue.mainEntity = value.mainEntity.trim();
+    finalValue.otherEntity = [];
+    for (let i = 0; i < value.otherEntity.length; i++) {
+      finalValue.otherEntity[i] = {
+        otherEntities: '',
+      };
+      finalValue.otherEntity[i].otherEntities =
+        value.otherEntity[i].otherEntities.trim();
+    }
+
+    await this.fixUrl(finalValue);
 
     this.loading = false;
     if (this.checkUrl) {
