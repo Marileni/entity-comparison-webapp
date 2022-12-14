@@ -158,7 +158,7 @@ export class EntitiesComponent implements OnInit {
   async submit(value: any) {
     this.loading = true;
 
-    var finalValue: FinalValue = {
+    var finalValue: any = {
       mainEntity: '',
       otherEntity: [],
     };
@@ -177,7 +177,7 @@ export class EntitiesComponent implements OnInit {
 
     this.loading = false;
     if (this.checkUrl) {
-      this.sharedService.updateEntitiesTransfer(value);
+      this.sharedService.updateEntitiesTransfer(finalValue);
       localStorage.setItem(
         'data',
         JSON.stringify(this.sharedService.entitiesTransfer)
