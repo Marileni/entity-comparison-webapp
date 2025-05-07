@@ -1,4 +1,5 @@
 # EntitiesConnection
+This is the **Angular** frontend for the [Entity Comparison API](https://github.com/Marileni/entity-comparison-api), developed as part of my Bachelor's thesis in Computer Science.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.0.5.
 
